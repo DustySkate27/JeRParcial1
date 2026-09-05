@@ -176,7 +176,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
 
     IEnumerator DelayBetweenScreens()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1000f);
     }
 
     #endregion
