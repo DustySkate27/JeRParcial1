@@ -79,7 +79,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         if (roomsDic.ContainsKey(roomName))
         {
-            ErrorExistingRoom(screen);
+            
+            StartCoroutine(ErrorExistingRoom(screen));
         }
         else
         {
@@ -102,7 +103,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            ErrorFullOrInexistent(screen);
+            StartCoroutine(ErrorFullOrInexistent(screen));
         }
     }
 
@@ -118,11 +119,11 @@ public class PhotonManager : MonoBehaviourPunCallbacks
             if ((string)roomInfo.CustomProperties["password"] == password)
                 PhotonNetwork.JoinRoom(roomName);
             else
-                ErrorIncorrectPassword(screen);   
+                StartCoroutine(ErrorIncorrectPassword(screen));   
         }
         else
         {
-            ErrorFullOrInexistent(screen);
+            StartCoroutine(ErrorFullOrInexistent(screen));
         }
     }
 
@@ -136,12 +137,14 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     /// Error used in case a room creation input is the same as an already existing room. Screen refers to the current canvas.
     /// </summary>
     /// <param name="screen"></param>
-    private void ErrorExistingRoom(GameObject screen)
+    private IEnumerator ErrorExistingRoom(GameObject screen)
     {
         screen.SetActive(false);
         errorText.text = "This room already exists.";
         errorCanvas.SetActive(true);
-        StartCoroutine(DelayBetweenScreens());
+
+        yield return new WaitForSeconds(2f);
+
         errorCanvas.SetActive(false);
         mainCanvas.SetActive(true);
     }
@@ -150,12 +153,14 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     /// Error used in case a room doesn't exist or it's full. Screen refers to the current canvas.
     /// </summary>
     /// <param name="screen"></param>
-    private void ErrorFullOrInexistent(GameObject screen)
+    private IEnumerator ErrorFullOrInexistent(GameObject screen)
     {
         screen.SetActive(false);
         errorText.text = "The room doesn't exist anymore or it's already full.";
         errorCanvas.SetActive(true);
-        StartCoroutine(DelayBetweenScreens());
+
+        yield return new WaitForSeconds(2f);
+
         errorCanvas.SetActive(false);
         mainCanvas.SetActive(true);
     }
@@ -164,19 +169,16 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     /// Error used in case the password is incorrect. Screen refers to the current canvas.
     /// </summary>
     /// <param name="screen"></param>
-    private void ErrorIncorrectPassword(GameObject screen)
+    private IEnumerator ErrorIncorrectPassword(GameObject screen)
     {
         screen.SetActive(false);
         errorText.text = "Incorrect password.";
         errorCanvas.SetActive(true);
-        StartCoroutine(DelayBetweenScreens());
+
+        yield return new WaitForSeconds(2f);
+
         errorCanvas.SetActive(false);
         mainCanvas.SetActive(true);
-    }
-
-    IEnumerator DelayBetweenScreens()
-    {
-        yield return new WaitForSeconds(1000f);
     }
 
     #endregion
