@@ -83,6 +83,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         }
         else
         {
+            OnLoadingRoom(screen);
             PhotonNetwork.CreateRoom(roomName, options);
         }
     }
@@ -123,6 +124,12 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         {
             ErrorFullOrInexistent(screen);
         }
+    }
+
+    private void OnLoadingRoom(GameObject screen)
+    {
+        screen.SetActive(false);
+        loadingCanvas.SetActive(true);
     }
 
     /// <summary>
@@ -173,4 +180,10 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     }
 
     #endregion
+
+    public override void OnCreatedRoom()
+    {
+        base.OnCreatedRoom();
+        Debug.Log("Room Successfully created");
+    }
 }

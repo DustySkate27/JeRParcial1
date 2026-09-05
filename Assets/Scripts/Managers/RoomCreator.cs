@@ -14,14 +14,14 @@ public class RoomCreator : MonoBehaviourPun
 
     public void RoomCreation()
     {
-        if (roomPassword.text != null)
+        if (!string.IsNullOrEmpty(roomPassword.text))
         {
             RoomOptions options = new RoomOptions
             {
                 CustomRoomProperties = new Hashtable
-            {
-                { password, roomPassword.text}
-            },
+                {
+                    { password, roomPassword.text}
+                },
                 IsVisible = false
             };
 
