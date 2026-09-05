@@ -182,10 +182,4 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     }
 
     #endregion
-
-    public override void OnCreatedRoom()
-    {
-        base.OnCreatedRoom();
-        Debug.Log("Room Successfully created");
-    }
 }
