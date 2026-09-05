@@ -79,7 +79,6 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         if (roomsDic.ContainsKey(roomName))
         {
-            
             StartCoroutine(ErrorExistingRoom(screen));
         }
         else
@@ -97,8 +96,10 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     /// <param name="screen"></param>
     public void LoadRoom(string roomName, GameObject screen)
     {
+
         if(roomsDic.TryGetValue(roomName, out RoomInfo roomInfo) && roomInfo.PlayerCount < playerLimit)
         {
+            Debug.Log("Entré asi nomas");
             PhotonNetwork.JoinRoom(roomName);
         }
         else
@@ -116,6 +117,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     {
         if (roomsDic.TryGetValue(roomName, out RoomInfo roomInfo) && roomInfo.PlayerCount < playerLimit)
         {
+            Debug.Log("Entré con password");
             if ((string)roomInfo.CustomProperties["password"] == password)
                 PhotonNetwork.JoinRoom(roomName);
             else
