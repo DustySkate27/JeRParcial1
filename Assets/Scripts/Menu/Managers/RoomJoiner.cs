@@ -12,6 +12,6 @@ public class RoomJoiner : MonoBehaviourPun
 
     public void PrivateRoomJoin()
     {
-        PhotonManager.Instance.LoadRoom(roomName.text, roomPassword.text, joinCanvas);
+        MainMenuPhotonManager.Instance.LoadRoom(roomName.text, roomPassword.text, joinCanvas);
     }
 }

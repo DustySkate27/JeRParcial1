@@ -25,9 +25,9 @@ public class RoomCreator : MonoBehaviourPun
                 IsVisible = false
             };
 
-            PhotonManager.Instance.CreateRoom(roomName.text, options, createCanvas);
+            MainMenuPhotonManager.Instance.CreateRoom(roomName.text, options, createCanvas);
         }
         else
-            PhotonManager.Instance.CreateRoom(roomName.text, default, createCanvas);
+            MainMenuPhotonManager.Instance.CreateRoom(roomName.text, default, createCanvas);
     }
 }
