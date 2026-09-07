@@ -15,7 +15,6 @@ public class RayMovement : MonoBehaviourPun
 
     void Update()
     {
-        rb.linearVelocity = transform.forward * speed;
         currentTime += Time.deltaTime;
 
         if (currentTime > timeLimit)
@@ -24,23 +23,29 @@ public class RayMovement : MonoBehaviourPun
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void FixedUpdate()
+    {
+        rb.linearVelocity = transform.forward * speed;
+    }
+
+    private void OnTriggerEnter(Collider other)
     {
         if (!photonView.IsMine) return;
 
-        if (collision.gameObject.layer == wallDetectionLayer)
+        if ((wallDetectionLayer.value & (1 << other.gameObject.layer)) != 0)
         {
-            Debug.Log(collision.gameObject.name);
+            Debug.Log(other.gameObject.name);
         }
         else
         {
-            var other = collision.gameObject.GetComponent<PhotonView>();
-            if (!other.IsMine)
+            var collision = other.gameObject.GetComponent<PhotonView>();
+
+            if (collision != null && !collision.IsMine)
             {
-                if (collision.gameObject.layer == playerDetectionLayer)
+                if ((playerDetectionLayer.value & (1 << other.gameObject.layer)) != 0)
                 {
-                    PlayerController player = collision.gameObject.GetComponent<PlayerController>();
-                    Debug.Log(collision.gameObject.name + "Ray collision");
+                    PlayerController player = other.gameObject.GetComponent<PlayerController>();
+                    Debug.Log(other.gameObject.name + "Ray collision");
                     player.CallQuitCrown();
                 }
             }

@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 4075799765516582531}
   - component: {fileID: 8861954642596968408}
   - component: {fileID: 1401724896104156489}
-  m_Layer: 0
+  - component: {fileID: 3723702347286187567}
+  m_Layer: 8
   m_Name: Crown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -125,3 +126,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5899591b0916a85448a4f14edbc9db91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CrownController
+  afterDropCD: 3
+  playerDetectionLayer:
+    serializedVersion: 2
+    m_Bits: 128
+--- !u!114 &3723702347286187567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2929724351776186149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonView
+  ObservedComponentsFoldoutOpen: 0
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0

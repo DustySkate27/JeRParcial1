@@ -53,7 +53,6 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
         {
             gm.SpawnPlayer(playerCount);
         }
-
         else
         {
             Application.Quit();

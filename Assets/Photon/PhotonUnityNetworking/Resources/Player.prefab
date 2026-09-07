@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &172665072915167507
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 679429059719549715}
+  m_Layer: 7
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &679429059719549715
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 172665072915167507}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 1, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3388159857935523930}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &177409173818154330
 GameObject:
   m_ObjectHideFlags: 0
@@ -11,13 +42,13 @@ GameObject:
   - component: {fileID: 2130726933383590463}
   - component: {fileID: 7614569195051195252}
   - component: {fileID: 5173776423866244786}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Crown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2130726933383590463
 Transform:
   m_ObjectHideFlags: 0
@@ -101,7 +132,7 @@ GameObject:
   - component: {fileID: 4905701922102583491}
   - component: {fileID: 677231167888017374}
   - component: {fileID: 6400291144536531715}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -193,7 +224,9 @@ GameObject:
   - component: {fileID: 1840321540578539959}
   - component: {fileID: 6672148590311333724}
   - component: {fileID: 7167770399885079444}
-  m_Layer: 0
+  - component: {fileID: 545138511697808223}
+  - component: {fileID: 4187142867723980565}
+  m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -209,12 +242,13 @@ Transform:
   m_GameObject: {fileID: 9023047242468333407}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.87365, y: 4.96, z: 13.48}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4905701922102583491}
   - {fileID: 2130726933383590463}
+  - {fileID: 679429059719549715}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &6345160943128607862
@@ -263,7 +297,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 120
   m_CollisionDetection: 0
 --- !u!114 &6672148590311333724
 MonoBehaviour:
@@ -278,12 +312,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   speed: 10
+  jumpForces: 10
+  floorLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  checkFloor: {fileID: 3388159857935523930}
+  checkFloorDisntance: 1
   render: {fileID: 6400291144536531715}
-  ray: {fileID: 0}
-  raySpawn: {fileID: 0}
-  crownRender: {fileID: 177409173818154330}
-  crownObj: {fileID: 0}
+  gm: {fileID: 0}
+  ray: {fileID: 1922898231447294769, guid: b6ca2dd3a5237524f8b013424398d860, type: 3}
+  raySpawn: {fileID: 172665072915167507}
   attackCD: 1
+  crownRender: {fileID: 177409173818154330}
+  crownObj: {fileID: 2929724351776186149, guid: ab8e9654373f5494189d348920916b20, type: 3}
 --- !u!114 &7167770399885079444
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -314,3 +355,42 @@ MonoBehaviour:
   m_DefaultActionMap: 
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &545138511697808223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9023047242468333407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonView
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 4187142867723980565}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &4187142867723980565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9023047242468333407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64179f3720bbfe947b7724caa67b7c1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonRigidbodyView
+  m_SynchronizeVelocity: 1
+  m_SynchronizeAngularVelocity: 0
+  m_TeleportEnabled: 0
+  m_TeleportIfDistanceGreaterThan: 3

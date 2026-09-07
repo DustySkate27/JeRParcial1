@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviourPun
     [Header("Player Related")]
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private List<GameObject> playerSpawners;
+    [SerializeField] private List<Material> playerMaterials;
 
     private Dictionary<PlayerController, int> playersInParty = new Dictionary<PlayerController, int>();
 
@@ -34,6 +35,7 @@ public class GameManager : MonoBehaviourPun
     {
         GameObject currentPlayer = pm.ReturnSpawnedObject(playerPrefab.name, playerSpawners[ID].transform.position, Quaternion.identity);
         PlayerController player = currentPlayer.GetComponent<PlayerController>();
+        player.Initialize(this, playerMaterials[ID]);
         playersInParty.Add(player, 0);
     }
 
@@ -51,5 +53,25 @@ public class GameManager : MonoBehaviourPun
     public void WinGame(PlayerController player)
     {
         Debug.Log(player.ToString() + " Win");
+    }
+
+    [PunRPC]
+    public void CancelGame(PlayerController player)
+    {
+        Debug.Log(player.ToString() + "Partida cancelada");
+    }
+
+    [PunRPC]
+    public void PlayerQuitParty(PlayerController player)
+    {
+        if (playersInParty.ContainsKey(player))
+        {
+            playersInParty.Remove(player);
+        }
+        if (playersInParty.Count < 2)
+        {
+            photonView.RPC(nameof(CancelGame), RpcTarget.All);
+        }
+
     }
 }

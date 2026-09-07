@@ -10,6 +10,11 @@ public class CrownController : MonoBehaviourPun
 
     [SerializeField] private LayerMask playerDetectionLayer;
 
+    private void Start()
+    {
+        ResetCrown();
+    }
+
     public void ResetCrown()
     {
         canTakeCrown = false;
@@ -20,11 +25,9 @@ public class CrownController : MonoBehaviourPun
     {
         if (!canTakeCrown)
         {
-            if(currentTime > afterDropCD)
-            {
-                currentTime += Time.deltaTime;
-            }
-            else
+            currentTime += Time.deltaTime;
+
+            if (currentTime >= afterDropCD)
             {
                 canTakeCrown = true;
             }
@@ -33,8 +36,14 @@ public class CrownController : MonoBehaviourPun
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.layer == playerDetectionLayer)
+        Debug.Log("colisione con algo");
+
+        // Comprobación correcta con bitmask
+        if ((playerDetectionLayer.value & (1 << other.gameObject.layer)) != 0)
         {
+            if (!canTakeCrown) return;
+
+            Debug.Log("El player me toco");
             PlayerController player = other.gameObject.GetComponent<PlayerController>();
             player.CallAddCrown();
             photonView.RPC(nameof(DestroyCrown), RpcTarget.All);
