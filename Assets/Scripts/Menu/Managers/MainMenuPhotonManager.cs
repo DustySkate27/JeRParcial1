@@ -6,10 +6,8 @@ using System.Collections.Generic;
 using TMPro;
 using System.Collections;
 using UnityEngine.Device;
-public class PhotonManager : MonoBehaviourPunCallbacks
+public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
 {
-    public static PhotonManager Instance;
-
     [Header("Scene Objects")]
     [SerializeField] private GameObject mainCanvas;
     [SerializeField] private GameObject loadingCanvas;
@@ -20,17 +18,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     private int playerLimit = 4;
 
     private void Awake()
-    {
-        if(Instance != null & Instance != this)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        
+    {   
         loadingCanvas.SetActive(true);
         mainCanvas.SetActive(false);
         errorCanvas.SetActive(false);
