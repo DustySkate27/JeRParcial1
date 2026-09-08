@@ -2,26 +2,31 @@ using Photon.Pun;
 using Photon.Realtime;
 using System;
 using UnityEngine;
+using UnityEngine.Rendering.UI;
 
 public class PlayerController : MonoBehaviourPun
 {
+    private GameplayPhotonManager phMan;
+    private GameManager gm;
+    private float rtPoints;
+    private int points;
+    private int ID;
+
     [Header("Movement configuration")]
     [SerializeField] private float speed;
     [SerializeField] private float jumpForces;
+    [SerializeField] private LayerMask floorLayer;
+    [SerializeField] private Transform checkFloor;
+    [SerializeField] private float checkFloorDistance;
     private float moveDirection;
     private bool isFacingRight = true;
     private bool canJump = false;
     private Rigidbody rb;
-    [SerializeField] private LayerMask floorLayer;
-    [SerializeField] private Transform checkFloor;
-    [SerializeField] private float checkFloorDisntance;
 
     [Header("Render")]
     [SerializeField] private Renderer render;
     private Material material;
 
-    public GameManager gm;
-    private float points;
 
     [Header("Ray")]
     [SerializeField] private GameObject ray;
@@ -32,18 +37,20 @@ public class PlayerController : MonoBehaviourPun
     private float counterCD;
 
     [Header("Crown")]
-    [SerializeField] private GameObject crownRender;
-    [SerializeField] private GameObject crownObj;
+    public Transform crownPosition;
     private bool haveCrown;
 
 
-    public void Initialize(GameManager gm, Material playerMaterial)
+    public void Initialize(GameplayPhotonManager phMan, GameManager gm, int ID)
     {
         rb = gameObject.GetComponent<Rigidbody>();
 
+        this.phMan = phMan;
         this.gm = gm;
-        material = playerMaterial;
-        render.material = playerMaterial;
+        this.ID = ID;
+
+        material = gm.PlayerMaterials[ID];
+        render.material = gm.PlayerMaterials[ID];
 
         Debug.Log(gm);
         Debug.Log(gameObject.name + " has join the party");
@@ -62,8 +69,10 @@ public class PlayerController : MonoBehaviourPun
         moveDirection = Input.GetAxisRaw("Horizontal");
         counterCD += Time.deltaTime;
 
-        Jump();
-        Attack();
+        if (Input.GetKeyDown(KeyCode.W))
+        { 
+            Attack();
+        }
 
         if (moveDirection > 0f && !isFacingRight)
         {
@@ -76,15 +85,17 @@ public class PlayerController : MonoBehaviourPun
             isFacingRight = false;
         }
 
-        canJump = Physics.CheckSphere(checkFloor.position, checkFloorDisntance, floorLayer);
+        canJump = Physics.CheckSphere(checkFloor.position, checkFloorDistance, floorLayer);
     }
 
     private void FixedUpdate()
     {
+        if (!photonView.IsMine) return;
+
         if (rb == null) return;
 
         Move();
-        
+        Jump();
     }
 
     public void Move()
@@ -95,17 +106,10 @@ public class PlayerController : MonoBehaviourPun
 
     public void Jump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && canJump)
+        if (canJump)
         {
             rb.AddForce(Vector3.up * jumpForces, ForceMode.Impulse);
         }
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        if (checkFloor == null) return;
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(checkFloor.position, checkFloorDisntance);
     }
 
     public void Attack()
@@ -113,18 +117,20 @@ public class PlayerController : MonoBehaviourPun
         if (Input.GetMouseButtonDown(0) && counterCD > attackCD)
         {
             counterCD = 0;
-            //raySpawn.transform.rotation
-            RayMovement attack = gm.pm.ReturnSpawnedObject(ray.name, raySpawn.transform.position, raySpawn.transform.rotation).GetComponent<RayMovement>();
+            RayMovement attack = phMan.ReturnSpawnedObject(ray.name, raySpawn.transform.position, raySpawn.transform.rotation).GetComponent<RayMovement>();
             attack.owner = this;
         }
     }
 
     private void AddPoint()
     {
-        points += Time.deltaTime;
-        int result = Convert.ToInt32(points);
+        rtPoints += Time.deltaTime;
+        points = Convert.ToInt32(rtPoints);
 
-        gm.AddPoint(this, result);
+        if(points >= gm.WinningPoints)
+        {
+            gm.WinCondition(points, this);
+        }
     }
 
     public void CallAddCrown()
@@ -137,23 +143,29 @@ public class PlayerController : MonoBehaviourPun
         photonView.RPC(nameof(QuitCrown), RpcTarget.All);
     }
 
+    private void OnDrawGizmosSelected()
+    {
+        if (checkFloor == null) return;
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(checkFloor.position, checkFloorDistance);
+    }
+
+    #region RPCMethods
     [PunRPC]
     private void AddCrown()
     {
         haveCrown = true;
-        crownRender.SetActive(true);
     }
 
     [PunRPC]
     private void QuitCrown()
     {
         haveCrown = false;
-        Debug.Log(gm);
-        gm.pm.SpawnObject(crownObj.name, transform.position, Quaternion.identity);
     }
 
-    void OnApplicationQuit()
+    private void OnApplicationQuit()
     {
         photonView.RPC(nameof(gm.PlayerQuitParty), RpcTarget.All, this);
     }
+    #endregion
 }

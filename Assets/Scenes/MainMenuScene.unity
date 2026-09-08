@@ -237,6 +237,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecb18e4307664fe4bbf0a61612b5d636, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomCreator
+  phMan: {fileID: 0}
   createCanvas: {fileID: 37489880}
   roomName: {fileID: 838760163}
   roomPassword: {fileID: 922727094}
@@ -1211,7 +1212,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &343841026
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1315,7 +1316,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &397535972
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1416,6 +1417,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e61d6a0bd44378c4f895206d5bc57931, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomJoiner
+  phMan: {fileID: 0}
   joinCanvas: {fileID: 397535971}
   roomName: {fileID: 1217167011}
   roomPassword: {fileID: 1536505156}

@@ -1,11 +1,12 @@
 using Photon.Pun;
 using System.Collections.Generic;
+using System.Globalization;
 using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviourPun
 {
-    public GameplayPhotonManager pm;
+    public GameplayPhotonManager phMan;
 
     [Header("Camera Related")]
     [SerializeField] private Camera mainCamera;
@@ -15,63 +16,60 @@ public class GameManager : MonoBehaviourPun
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private List<GameObject> playerSpawners;
     [SerializeField] private List<Material> playerMaterials;
-
-    private Dictionary<PlayerController, int> playersInParty = new Dictionary<PlayerController, int>();
+    public List<Material> PlayerMaterials => playerMaterials;
 
     [Header("WinCondition")]
-    [SerializeField] private int winConditiion;
+    [SerializeField] private int winningPoints;
+    public int WinningPoints => winningPoints;
 
     [Header("Crown Related")]
     [SerializeField] private GameObject crownPrefab;
     [SerializeField] private GameObject crownSpawners;
+    private CrownController crownController;
 
-    public void InitializeGame()
+    public void GameStart()
     {
-        pm.SpawnObject(crownPrefab.name, crownSpawners.transform.position, Quaternion.identity);
+        var crown = phMan.ReturnSpawnedRoomObject(crownPrefab.name, crownSpawners.transform.position, Quaternion.identity);
+        crownController = crown.GetComponent<CrownController>();
         Debug.Log("The party has started");
     }
 
     public void SpawnPlayer(int ID)
     {
-        GameObject currentPlayer = pm.ReturnSpawnedObject(playerPrefab.name, playerSpawners[ID].transform.position, Quaternion.identity);
+        GameObject currentPlayer = phMan.ReturnSpawnedObject(playerPrefab.name, playerSpawners[ID].transform.position, Quaternion.identity);
         PlayerController player = currentPlayer.GetComponent<PlayerController>();
-        player.Initialize(this, playerMaterials[ID]);
-        playersInParty.Add(player, 0);
+        player.Initialize(phMan, this, ID);
     }
 
-    public void AddPoint(PlayerController player, int points)
+    public void WinCondition(int points, PlayerController player)
     {
-        playersInParty[player] = points;
-
-        if (playersInParty[player] >= winConditiion)
+        if (points >= winningPoints)
         {
             photonView.RPC(nameof(WinGame), RpcTarget.All, player);
         }
     }
 
+    #region RPCMethods
+
     [PunRPC]
     public void WinGame(PlayerController player)
     {
-        Debug.Log(player.ToString() + " Win");
+        Debug.Log(player.name + " Wins");
     }
 
     [PunRPC]
-    public void CancelGame(PlayerController player)
+    public void CancelGame()
     {
-        Debug.Log(player.ToString() + "Partida cancelada");
+        Debug.Log(" Canceled game. Disconneting...");
     }
 
     [PunRPC]
-    public void PlayerQuitParty(PlayerController player)
+    public void PlayerQuitParty()
     {
-        if (playersInParty.ContainsKey(player))
-        {
-            playersInParty.Remove(player);
-        }
-        if (playersInParty.Count < 2)
+        if (phMan.PlayerCount < 2)
         {
             photonView.RPC(nameof(CancelGame), RpcTarget.All);
         }
-
     }
+    #endregion
 }

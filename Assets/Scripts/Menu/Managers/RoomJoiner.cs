@@ -1,10 +1,12 @@
 using Photon.Pun;
 using Photon.Realtime;
+using System.Security.Cryptography;
 using TMPro;
 using UnityEngine;
 
 public class RoomJoiner : MonoBehaviourPun
 {
+    [SerializeField] private MainMenuPhotonManager phMan;
     [SerializeField] private GameObject joinCanvas;
     [SerializeField] private TMP_InputField roomName;
     [SerializeField] private TMP_InputField roomPassword;
@@ -12,6 +14,6 @@ public class RoomJoiner : MonoBehaviourPun
 
     public void PrivateRoomJoin()
     {
-        MainMenuPhotonManager.Instance.LoadRoom(roomName.text, roomPassword.text, joinCanvas);
+        phMan.LoadRoom(roomName.text, roomPassword.text, joinCanvas);
     }
 }

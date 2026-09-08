@@ -6,53 +6,55 @@ public class CrownController : MonoBehaviourPun
     [Header("Crown configuration")]
     [SerializeField] private float afterDropCD;
     private float currentTime;
-    private bool canTakeCrown = true;
+    private bool canPickDroppedCrown = true;
+    private bool isCrownTaken = false;
 
-    [SerializeField] private LayerMask playerDetectionLayer;
+    //[SerializeField] private LayerMask playerDetectionLayer;
+    [SerializeField] private LayerMask bulletDetectionLayer;
 
-    private void Start()
-    {
-        ResetCrown();
-    }
-
-    public void ResetCrown()
-    {
-        canTakeCrown = false;
-    }
+    private PlayerController currentPlayer;
 
     // Update is called once per frame
     void Update()
     {
-        if (!canTakeCrown)
+        if (!canPickDroppedCrown)
         {
             currentTime += Time.deltaTime;
 
             if (currentTime >= afterDropCD)
             {
-                canTakeCrown = true;
+                canPickDroppedCrown = true;
             }
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (isCrownTaken)
+        {
+            transform.position = currentPlayer.crownPosition.position;
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        if (!canPickDroppedCrown) return;
+
         Debug.Log("colisione con algo");
 
         // Comprobación correcta con bitmask
         if ((playerDetectionLayer.value & (1 << other.gameObject.layer)) != 0)
         {
-            if (!canTakeCrown) return;
-
             Debug.Log("El player me toco");
-            PlayerController player = other.gameObject.GetComponent<PlayerController>();
-            player.CallAddCrown();
-            photonView.RPC(nameof(DestroyCrown), RpcTarget.All);
+            canPickDroppedCrown = false;
+            currentPlayer = other.gameObject.GetComponent<PlayerController>();
+            currentPlayer.CallAddCrown();
         }
-    }
 
-    [PunRPC]
-    private void DestroyCrown()
-    {
-        PhotonNetwork.Destroy(gameObject);
+        if ((bulletDetectionLayer.value & (1<<other.gameObject.layer)) != 0)
+        {
+            canPickDroppedCrown = false;
+            currentPlayer.CallQuitCrown();
+        }
     }
 }

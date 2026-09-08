@@ -6,6 +6,7 @@ using Photon.Realtime;
 using ExitGames.Client.Photon;
 public class RoomCreator : MonoBehaviourPun
 {
+    [SerializeField] private MainMenuPhotonManager phMan;
     [SerializeField] private GameObject createCanvas;
     [SerializeField] private TMP_InputField roomName;
     [SerializeField] private TMP_InputField roomPassword;
@@ -25,9 +26,9 @@ public class RoomCreator : MonoBehaviourPun
                 IsVisible = false
             };
 
-            MainMenuPhotonManager.Instance.CreateRoom(roomName.text, options, createCanvas);
+            phMan.CreateRoom(roomName.text, options, createCanvas);
         }
         else
-            MainMenuPhotonManager.Instance.CreateRoom(roomName.text, default, createCanvas);
+            phMan.CreateRoom(roomName.text, default, createCanvas);
     }
 }

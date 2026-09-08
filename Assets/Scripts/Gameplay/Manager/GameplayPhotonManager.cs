@@ -11,11 +11,13 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
     private Action onRoom;
     private bool isMaster;
 
+    public int PlayerCount => AmountOfPlayers();
+
     private void Start()
     {
-        gm.pm = this;
+        gm.phMan = this;
 
-        onRoom += MasterGameStart;
+        onRoom += InitializeMatch;
 
         PhotonNetwork.ConnectUsingSettings();
     }
@@ -37,7 +39,7 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
         onRoom?.Invoke();
     }
 
-    private void MasterGameStart()
+    private void InitializeMatch()
     {
         string roomName = PhotonNetwork.CurrentRoom.Name;
         int playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
@@ -46,7 +48,7 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
 
         if (isMaster)
         {
-            gm.InitializeGame();
+            gm.GameStart();
         }
 
         if (playerCount < 4)
@@ -74,10 +76,18 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
         PhotonNetwork.InstantiateRoomObject(name, position, rotation, group: 0);
     }
 
+    public GameObject ReturnSpawnedRoomObject(string name, Vector3 position, Quaternion rotation)
+    {
+        return PhotonNetwork.InstantiateRoomObject(name, position, rotation, group: 0);
+    }
+
     public void DestroyObject(GameObject obj)
     {
         PhotonNetwork.Destroy(obj);
     }
 
-
+    private int AmountOfPlayers()
+    {
+        return PhotonNetwork.CurrentRoom.PlayerCount;
+    }
 }

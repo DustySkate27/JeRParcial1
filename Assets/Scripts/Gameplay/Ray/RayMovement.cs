@@ -10,7 +10,6 @@ public class RayMovement : MonoBehaviourPun
     [SerializeField] private float timeLimit = 2;
     private float currentTime = 0;
 
-    [SerializeField] private LayerMask playerDetectionLayer;
     [SerializeField] private LayerMask wallDetectionLayer;
 
     void Update()
@@ -36,20 +35,6 @@ public class RayMovement : MonoBehaviourPun
         {
             Debug.Log(other.gameObject.name);
         }
-        else
-        {
-            var collision = other.gameObject.GetComponent<PhotonView>();
-
-            if (collision != null && !collision.IsMine)
-            {
-                if ((playerDetectionLayer.value & (1 << other.gameObject.layer)) != 0)
-                {
-                    PlayerController player = other.gameObject.GetComponent<PlayerController>();
-                    Debug.Log(other.gameObject.name + "Ray collision");
-                    player.CallQuitCrown();
-                }
-            }
-        }
 
         photonView.RPC(nameof(DestroyBullet), RpcTarget.All);
     }
@@ -57,6 +42,6 @@ public class RayMovement : MonoBehaviourPun
     [PunRPC]
     public void DestroyBullet()
     {
-        owner.gm.pm.DestroyObject(gameObject);
+        PhotonNetwork.Destroy(gameObject);
     }
 }
