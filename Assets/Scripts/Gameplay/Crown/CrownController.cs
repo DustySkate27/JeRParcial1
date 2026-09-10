@@ -9,7 +9,7 @@ public class CrownController : MonoBehaviourPun
     private bool canPickDroppedCrown = true;
     private bool isCrownTaken = false;
 
-    //[SerializeField] private LayerMask playerDetectionLayer;
+    [SerializeField] private LayerMask playerDetectionLayer;
     [SerializeField] private LayerMask bulletDetectionLayer;
 
     private PlayerController currentPlayer;
