@@ -15,10 +15,9 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
     [SerializeField] private TextMeshProUGUI errorText;
 
     private Dictionary<string, RoomInfo> roomsDic = new Dictionary<string, RoomInfo>();
-    private int playerLimit = 4;
 
     private void Awake()
-    {   
+    {
         loadingCanvas.SetActive(true);
         mainCanvas.SetActive(false);
         errorCanvas.SetActive(false);
@@ -28,7 +27,11 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         base.OnConnectedToMaster();
-        PhotonNetwork.JoinLobby();
+        PhotonNetwork.JoinLobby();  
+    }
+    public override void OnJoinedLobby()
+    {
+        base.OnJoinedLobby();
         loadingCanvas.SetActive(false);
         mainCanvas.SetActive(true);
     }
@@ -55,6 +58,15 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
     }
 
     #region Project Methods
+    /// <summary>
+    /// Method used for the transitions.
+    /// </summary>
+    /// <param name="screen"></param>
+    private void OnLoadingRoom(GameObject screen)
+    {
+        screen.SetActive(false);
+        loadingCanvas.SetActive(true);
+    }
 
     /// <summary>
     /// Creates a new room. Screen refers to the current canvas.
@@ -84,8 +96,8 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
     /// <param name="screen"></param>
     public void LoadRoom(string roomName, GameObject screen)
     {
-
-        if(roomsDic.TryGetValue(roomName, out RoomInfo roomInfo) && roomInfo.PlayerCount < playerLimit)
+        Debug.Log(roomsDic[roomName].Name);
+        if(roomsDic.TryGetValue(roomName, out RoomInfo info) && info.PlayerCount < info.MaxPlayers)
         {
             Debug.Log("Entré asi nomas");
             PhotonNetwork.JoinRoom(roomName);
@@ -103,10 +115,10 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
     /// <param name="password"></param>
     public void LoadRoom(string roomName, string password, GameObject screen)
     {
-        if (roomsDic.TryGetValue(roomName, out RoomInfo roomInfo) && roomInfo.PlayerCount < playerLimit)
+        if (roomsDic.TryGetValue(roomName, out RoomInfo info) && info.PlayerCount < info.MaxPlayers)
         {
             Debug.Log("Entré con password");
-            if ((string)roomInfo.CustomProperties["password"] == password)
+            if ((string)info.CustomProperties["password"] == password)
                 PhotonNetwork.JoinRoom(roomName);
             else
                 StartCoroutine(ErrorIncorrectPassword(screen));   
@@ -117,11 +129,6 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
         }
     }
 
-    private void OnLoadingRoom(GameObject screen)
-    {
-        screen.SetActive(false);
-        loadingCanvas.SetActive(true);
-    }
 
     /// <summary>
     /// Error used in case a room creation input is the same as an already existing room. Screen refers to the current canvas.
@@ -169,6 +176,43 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
 
         errorCanvas.SetActive(false);
         mainCanvas.SetActive(true);
+    }
+
+    
+
+    public override void OnCreatedRoom()
+    {
+        base.OnCreatedRoom();
+        Debug.Log("sala creada");
+    }
+
+    public override void OnJoinedRoom()
+    {
+        base.OnJoinedRoom();
+        PhotonNetwork.LeaveLobby();
+        Debug.Log("unido a sala");
+    }
+
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        base.OnCreateRoomFailed(returnCode, message);
+
+        loadingCanvas.SetActive(false);
+        errorText.text = "unexpected error : RoomCreationFailed";
+        errorCanvas.SetActive(true);
+
+        Debug.LogError($"Create Room Failed | Code: {returnCode} | {message}");
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        base.OnJoinRoomFailed(returnCode, message);
+
+        loadingCanvas.SetActive(false);
+        errorText.text = "unexpected error : RoomJoinFailed";
+        errorCanvas.SetActive(true);
+
+        Debug.LogError($"Create Room Failed | Code: {returnCode} | {message}");
     }
 
     #endregion

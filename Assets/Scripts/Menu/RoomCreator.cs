@@ -11,24 +11,21 @@ public class RoomCreator : MonoBehaviourPun
     [SerializeField] private TMP_InputField roomName;
     [SerializeField] private TMP_InputField roomPassword;
 
-    private const string password = "password";
-
     public void RoomCreation()
     {
+        RoomOptions options = new RoomOptions
+        {
+            MaxPlayers = 4
+        };
+
         if (!string.IsNullOrEmpty(roomPassword.text))
         {
-            RoomOptions options = new RoomOptions
+            options.CustomRoomProperties = new Hashtable
             {
-                CustomRoomProperties = new Hashtable
-                {
-                    { password, roomPassword.text}
-                },
-                IsVisible = false
+                { "password", roomPassword.text },
             };
-
-            phMan.CreateRoom(roomName.text, options, createCanvas);
         }
-        else
-            phMan.CreateRoom(roomName.text, default, createCanvas);
+
+        phMan.CreateRoom(roomName.text, options, createCanvas);
     }
 }
