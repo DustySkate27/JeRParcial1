@@ -96,10 +96,10 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
     /// <param name="screen"></param>
     public void LoadRoom(string roomName, GameObject screen)
     {
-        Debug.Log(roomsDic[roomName].Name);
         if(roomsDic.TryGetValue(roomName, out RoomInfo info) && info.PlayerCount < info.MaxPlayers)
         {
             Debug.Log("Entré asi nomas");
+            OnLoadingRoom(screen);
             PhotonNetwork.JoinRoom(roomName);
         }
         else
@@ -178,12 +178,16 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
         mainCanvas.SetActive(true);
     }
 
-    
-
     public override void OnCreatedRoom()
     {
         base.OnCreatedRoom();
-        Debug.Log("sala creada");
+        Debug.Log($"sala creada: {PhotonNetwork.CurrentRoom.Name}");
+        Debug.Log($"PASSWORD: {PhotonNetwork.CurrentRoom.CustomProperties["password"]}");
+
+        foreach (var property in PhotonNetwork.CurrentRoom.CustomProperties)
+        {
+            Debug.Log($"CURRENT ROOM PROPERTY: {property.Key} = {property.Value}");
+        }
     }
 
     public override void OnJoinedRoom()

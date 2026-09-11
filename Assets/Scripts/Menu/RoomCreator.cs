@@ -20,12 +20,18 @@ public class RoomCreator : MonoBehaviourPun
 
         if (!string.IsNullOrEmpty(roomPassword.text))
         {
+            Debug.Log($"{roomName.text} tiene password");
+
             options.CustomRoomProperties = new Hashtable
             {
                 { "password", roomPassword.text },
             };
+            
+            options.CustomRoomPropertiesForLobby = new[]
+            {
+                "password"
+            };
         }
-
         phMan.CreateRoom(roomName.text, options, createCanvas);
     }
 }
