@@ -189,26 +189,31 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
+
         PhotonNetwork.LeaveLobby();
 
         if (PhotonNetwork.CurrentRoom.PlayerCount != 1) 
         {
             PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("password", out object storedPwd);
-            Debug.Log((string) storedPwd);
+
             if (string.IsNullOrEmpty((string)storedPwd))
             {
                 Debug.Log("era sala publica");
             }
             else if(insertedPassword == null || insertedPassword != (string)storedPwd)
             {
-                
                 PhotonNetwork.LeaveRoom();
                 StartCoroutine(ErrorIncorrectPassword(loadingCanvas));
                 return;
             } 
         }
+        else
+        {
+            PhotonNetwork.LoadLevel("WaitingScene");
+        }
+        
         insertedPassword = null;
-        Debug.Log("unido a sala");
+        PhotonNetwork.AutomaticallySyncScene = true;
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)

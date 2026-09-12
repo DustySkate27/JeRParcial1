@@ -12,6 +12,9 @@ public class RoomCreator : MonoBehaviourPun
     [SerializeField] private TMP_InputField roomName;
     [SerializeField] private TMP_InputField roomPassword;
 
+    /// <summary>
+    /// Creates a room. If the room has a password, the ListOfRooms script won't show that room in the rooms public list.
+    /// </summary>
     public void RoomCreation()
     {
         bool hasPassword = !string.IsNullOrEmpty(roomPassword.text);
