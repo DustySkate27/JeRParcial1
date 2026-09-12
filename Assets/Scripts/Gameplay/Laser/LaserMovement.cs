@@ -1,7 +1,7 @@
 using Photon.Pun;
 using UnityEngine;
 
-public class RayMovement : MonoBehaviourPun
+public class LaserMovement : MonoBehaviourPun
 {
     public PlayerController owner;
 
@@ -18,7 +18,7 @@ public class RayMovement : MonoBehaviourPun
 
         if (currentTime > timeLimit)
         {
-            photonView.RPC(nameof(DestroyBullet), RpcTarget.All);
+            DestroyLaser();
         }
     }
 
@@ -36,11 +36,10 @@ public class RayMovement : MonoBehaviourPun
             Debug.Log(other.gameObject.name);
         }
 
-        photonView.RPC(nameof(DestroyBullet), RpcTarget.All);
+        DestroyLaser();
     }
 
-    [PunRPC]
-    public void DestroyBullet()
+    private void DestroyLaser()
     {
         PhotonNetwork.Destroy(gameObject);
     }

@@ -3,12 +3,16 @@ using Photon.Realtime;
 using System;
 using UnityEngine;
 using UnityEngine.Rendering.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviourPun
 {
     private GameplayPhotonManager phMan;
     private WaitingPhotonManager phWait;
     private GameManager gm;
+    private WaitManager wm;
+    private bool gameScene = false;
+
     private float rtPoints;
     private int points;
     private int ID;
@@ -22,18 +26,15 @@ public class PlayerController : MonoBehaviourPun
     private float moveDirection;
     private bool isFacingRight = true;
     private bool canJump = false;
+    private bool jump = false;
     private Rigidbody rb;
 
     [Header("Render")]
     [SerializeField] private Renderer render;
-    private Material material;
 
-
-    [Header("Ray")]
-    [SerializeField] private GameObject ray;
-    [SerializeField] private GameObject raySpawn;
-
-    [Header("Ray cooldown")]
+    [Header("Laser")]
+    [SerializeField] private GameObject laser;
+    [SerializeField] private GameObject laserSpawn;
     [SerializeField] private float attackCD;
     private float counterCD;
 
@@ -42,24 +43,30 @@ public class PlayerController : MonoBehaviourPun
     private bool haveCrown;
 
 
-    public PlayerController SpawnAndWait(WaitingPhotonManager ph)
+    public void InitializeWait(WaitingPhotonManager ph, WaitManager wm, int ID)
     {
         rb = gameObject.GetComponent<Rigidbody>();
 
         phWait = ph;
+        this.wm = wm;
+        this.ID = ID;
+        gameScene = false;
 
-        return this;
+        render.material = wm.PlayerMaterials[ID];
+
+        Debug.Log(gm);
+        Debug.Log(gameObject.name + " has join the party");
     }
 
-    public void Initialize(GameplayPhotonManager phMan, GameManager gm, int ID)
+    public void InitializeGame(GameplayPhotonManager ph, GameManager gm, int ID)
     {
         rb = gameObject.GetComponent<Rigidbody>();
 
-        this.phMan = phMan;
+        phMan = ph;
         this.gm = gm;
         this.ID = ID;
+        gameScene = true;
 
-        material = gm.PlayerMaterials[ID];
         render.material = gm.PlayerMaterials[ID];
 
         Debug.Log(gm);
@@ -79,9 +86,14 @@ public class PlayerController : MonoBehaviourPun
         moveDirection = Input.GetAxisRaw("Horizontal");
         counterCD += Time.deltaTime;
 
-        if (Input.GetKeyDown(KeyCode.W))
-        { 
+        if (Input.GetMouseButtonDown(0) && counterCD > attackCD)
+        {
             Attack();
+        }
+
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            jump = true;
         }
 
         if (moveDirection > 0f && !isFacingRight)
@@ -105,7 +117,11 @@ public class PlayerController : MonoBehaviourPun
         if (rb == null) return;
 
         Move();
-        Jump();
+        if (canJump && jump)
+        {
+            Jump();
+        }
+
     }
 
     public void Move()
@@ -116,20 +132,24 @@ public class PlayerController : MonoBehaviourPun
 
     public void Jump()
     {
-        if (canJump)
-        {
-            rb.AddForce(Vector3.up * jumpForces, ForceMode.Impulse);
-        }
+        rb.AddForce(Vector3.up * jumpForces, ForceMode.Impulse);
+        jump = false;
     }
 
     public void Attack()
     {
-        if (Input.GetMouseButtonDown(0) && counterCD > attackCD)
+        counterCD = 0;
+        if (gameScene)
         {
-            counterCD = 0;
-            RayMovement attack = phMan.ReturnSpawnedObject(ray.name, raySpawn.transform.position, raySpawn.transform.rotation).GetComponent<RayMovement>();
+            LaserMovement attack = phMan.ReturnSpawnedObject(laser.name, laserSpawn.transform.position, laserSpawn.transform.rotation).GetComponent<LaserMovement>();
             attack.owner = this;
         }
+        else
+        {
+            LaserMovement attack = phWait.ReturnSpawnedObject(laser.name, laserSpawn.transform.position, laserSpawn.transform.rotation).GetComponent<LaserMovement>();
+            attack.owner = this;
+        }
+        
     }
 
     private void AddPoint()
@@ -172,7 +192,6 @@ public class PlayerController : MonoBehaviourPun
     {
         haveCrown = false;
     }
-
     private void OnApplicationQuit()
     {
         photonView.RPC(nameof(gm.PlayerQuitParty), RpcTarget.All, this);

@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviourPun
     {
         GameObject currentPlayer = phMan.ReturnSpawnedObject(playerPrefab.name, playerSpawners[ID].transform.position, Quaternion.identity);
         PlayerController player = currentPlayer.GetComponent<PlayerController>();
-        player.Initialize(phMan, this, ID);
+        player.InitializeGame(phMan, this, ID);
     }
 
     public void WinCondition(int points, PlayerController player)

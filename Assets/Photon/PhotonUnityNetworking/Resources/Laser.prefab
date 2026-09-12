@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 4358556465584114188}
   - component: {fileID: 6425596796451973444}
   m_Layer: 9
-  m_Name: Ray
+  m_Name: Laser
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -114,7 +114,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
+  m_Radius: 0.56
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &4504899341039416658
 MonoBehaviour:
@@ -132,9 +132,6 @@ MonoBehaviour:
   rb: {fileID: 769083718538947933}
   speed: 100
   timeLimit: 2
-  playerDetectionLayer:
-    serializedVersion: 2
-    m_Bits: 128
   wallDetectionLayer:
     serializedVersion: 2
     m_Bits: 64

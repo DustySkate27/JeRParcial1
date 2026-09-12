@@ -258,10 +258,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1024
   checkFloor: {fileID: 3388159857935523930}
-  checkFloorDistance: 0
+  checkFloorDistance: 1
   render: {fileID: 6400291144536531715}
-  ray: {fileID: 1922898231447294769, guid: b6ca2dd3a5237524f8b013424398d860, type: 3}
-  raySpawn: {fileID: 172665072915167507}
+  laser: {fileID: 1922898231447294769, guid: b6ca2dd3a5237524f8b013424398d860, type: 3}
+  laserSpawn: {fileID: 172665072915167507}
   attackCD: 1
   crownPosition: {fileID: 2130726933383590463}
 --- !u!114 &7167770399885079444

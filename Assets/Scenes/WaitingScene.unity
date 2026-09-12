@@ -194,12 +194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a722bdfa9117e94fa06f0f7ffa71ddd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WaitingPhotonManager
-  player: {fileID: 6672148590311333724, guid: d69c8eb269a562f42ab850cf996ebeee, type: 3}
-  spawners:
-  - {fileID: 107828054}
-  - {fileID: 975916695}
-  - {fileID: 1985137337}
-  - {fileID: 965573245}
+  wm: {fileID: 1443193064}
 --- !u!1 &908046057
 GameObject:
   m_ObjectHideFlags: 0
@@ -324,7 +319,7 @@ GameObject:
   - component: {fileID: 932987063}
   - component: {fileID: 932987062}
   - component: {fileID: 932987061}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -899,6 +894,62 @@ Transform:
   - {fileID: 1901026194}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1443193063
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1443193065}
+  - component: {fileID: 1443193064}
+  m_Layer: 0
+  m_Name: WaitManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1443193064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1443193063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ece717f00fc785246bc23de06d47bf56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WaitManager
+  phWait: {fileID: 676614264}
+  playerPrefab: {fileID: 9023047242468333407, guid: d69c8eb269a562f42ab850cf996ebeee, type: 3}
+  playerSpawners:
+  - {fileID: 107828054}
+  - {fileID: 975916695}
+  - {fileID: 1985137337}
+  - {fileID: 965573245}
+  playerMaterials:
+  - {fileID: 2100000, guid: 3e3de82589a5e0043b8ad430a7610703, type: 2}
+  - {fileID: 2100000, guid: 9a766396accb9284e88f87f7da17feee, type: 2}
+  - {fileID: 2100000, guid: 0464ab36257f0394f87bc1af83a68ce7, type: 2}
+  - {fileID: 2100000, guid: c282e811e1fa26a45bd7ae3bb496f44f, type: 2}
+--- !u!4 &1443193065
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1443193063}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 98.37476, y: 0, z: -340.35748}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1666433406
 GameObject:
   m_ObjectHideFlags: 0
@@ -1170,7 +1221,7 @@ GameObject:
   - component: {fileID: 1901026193}
   - component: {fileID: 1901026192}
   - component: {fileID: 1901026191}
-  m_Layer: 10
+  m_Layer: 6
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1306,6 +1357,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 676614263}
+  - {fileID: 1443193065}
   - {fileID: 1111685169}
   - {fileID: 1199935633}
   - {fileID: 1415679861}
