@@ -191,6 +191,7 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
         base.OnJoinedRoom();
 
         PhotonNetwork.LeaveLobby();
+        PhotonNetwork.AutomaticallySyncScene = true;
 
         if (PhotonNetwork.CurrentRoom.PlayerCount != 1) 
         {
@@ -213,7 +214,6 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
         }
         
         insertedPassword = null;
-        PhotonNetwork.AutomaticallySyncScene = true;
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
