@@ -4,6 +4,7 @@ using Photon.Pun;
 using TMPro;
 using Photon.Realtime;
 using ExitGames.Client.Photon;
+using Unity.VisualScripting;
 public class RoomCreator : MonoBehaviourPun
 {
     [SerializeField] private MainMenuPhotonManager phMan;
@@ -13,25 +14,24 @@ public class RoomCreator : MonoBehaviourPun
 
     public void RoomCreation()
     {
-        RoomOptions options = new RoomOptions
+        bool hasPassword = !string.IsNullOrEmpty(roomPassword.text);
+
+        Hashtable customProps = null;
+
+        customProps = new Hashtable
         {
-            MaxPlayers = 4
+            { "isPrivate", hasPassword },
+            { "password", roomPassword.text }
         };
 
-        if (!string.IsNullOrEmpty(roomPassword.text))
+        RoomOptions options = new RoomOptions
         {
-            Debug.Log($"{roomName.text} tiene password");
+            MaxPlayers = 4,
+            CustomRoomProperties = customProps,
+            CustomRoomPropertiesForLobby = new string[] { "isPrivate" }
+        };
 
-            options.CustomRoomProperties = new Hashtable
-            {
-                { "password", roomPassword.text },
-            };
-            
-            options.CustomRoomPropertiesForLobby = new[]
-            {
-                "password"
-            };
-        }
+        
         phMan.CreateRoom(roomName.text, options, createCanvas);
     }
 }

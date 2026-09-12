@@ -16,6 +16,8 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
 
     private Dictionary<string, RoomInfo> roomsDic = new Dictionary<string, RoomInfo>();
 
+    private string insertedPassword;
+
     private void Awake()
     {
         loadingCanvas.SetActive(true);
@@ -39,6 +41,7 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
         base.OnRoomListUpdate(roomList);
+        
         UpdateRoomsDic(roomList);
     }
 
@@ -118,17 +121,15 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
         if (roomsDic.TryGetValue(roomName, out RoomInfo info) && info.PlayerCount < info.MaxPlayers)
         {
             Debug.Log("Entré con password");
-            if ((string)info.CustomProperties["password"] == password)
-                PhotonNetwork.JoinRoom(roomName);
-            else
-                StartCoroutine(ErrorIncorrectPassword(screen));   
+            insertedPassword = password;
+            OnLoadingRoom(screen);
+            PhotonNetwork.JoinRoom(roomName); 
         }
         else
         {
             StartCoroutine(ErrorFullOrInexistent(screen));
         }
     }
-
 
     /// <summary>
     /// Error used in case a room creation input is the same as an already existing room. Screen refers to the current canvas.
@@ -183,17 +184,30 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
         base.OnCreatedRoom();
         Debug.Log($"sala creada: {PhotonNetwork.CurrentRoom.Name}");
         Debug.Log($"PASSWORD: {PhotonNetwork.CurrentRoom.CustomProperties["password"]}");
-
-        foreach (var property in PhotonNetwork.CurrentRoom.CustomProperties)
-        {
-            Debug.Log($"CURRENT ROOM PROPERTY: {property.Key} = {property.Value}");
-        }
     }
 
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
         PhotonNetwork.LeaveLobby();
+
+        if (PhotonNetwork.CurrentRoom.PlayerCount != 1) 
+        {
+            PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("password", out object storedPwd);
+            Debug.Log((string) storedPwd);
+            if (string.IsNullOrEmpty((string)storedPwd))
+            {
+                Debug.Log("era sala publica");
+            }
+            else if(insertedPassword == null || insertedPassword != (string)storedPwd)
+            {
+                
+                PhotonNetwork.LeaveRoom();
+                StartCoroutine(ErrorIncorrectPassword(loadingCanvas));
+                return;
+            } 
+        }
+        insertedPassword = null;
         Debug.Log("unido a sala");
     }
 
