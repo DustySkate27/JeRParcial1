@@ -7,6 +7,7 @@ using UnityEngine.Rendering.UI;
 public class PlayerController : MonoBehaviourPun
 {
     private GameplayPhotonManager phMan;
+    private WaitingPhotonManager phWait;
     private GameManager gm;
     private float rtPoints;
     private int points;
@@ -40,6 +41,15 @@ public class PlayerController : MonoBehaviourPun
     public Transform crownPosition;
     private bool haveCrown;
 
+
+    public PlayerController SpawnAndWait(WaitingPhotonManager ph)
+    {
+        rb = gameObject.GetComponent<Rigidbody>();
+
+        phWait = ph;
+
+        return this;
+    }
 
     public void Initialize(GameplayPhotonManager phMan, GameManager gm, int ID)
     {
