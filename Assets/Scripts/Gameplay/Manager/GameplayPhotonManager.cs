@@ -38,6 +38,9 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
             PhotonNetwork.Disconnect();
             SceneManager.LoadScene("MainMenuScene");
         }
+
+        gm.CrownSpawn();
+        gm.currentTime = 0;
     }
 
     private int GetPlayerID()
@@ -75,5 +78,25 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
         return PhotonNetwork.CurrentRoom.PlayerCount;
     }
 
-    public override 
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        base.OnPlayerLeftRoom(otherPlayer);
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            //Pause for 5 seconds.
+            //If it doesn't come back, PhotonNetwork.SetMasterClient.
+            //Catch currentTime and send it to the new MasterClient.
+        }
+
+        if(gm.crownController == null)
+        {
+            gm.CrownSpawn();
+        }
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        base.OnPlayerEnteredRoom(newPlayer);
+    }
 }

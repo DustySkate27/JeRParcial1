@@ -29,8 +29,9 @@ public class GameManager : MonoBehaviourPun
     [Header("Crown Related")]
     [SerializeField] private GameObject crownPrefab;
     [SerializeField] private GameObject crownSpawners;
-    private CrownController crownController;
+    public CrownController crownController;
 
+    public Dictionary<int, PlayerController> playersInMatch;
 
     private void Update()
     {
@@ -43,7 +44,7 @@ public class GameManager : MonoBehaviourPun
         }
     }
 
-    public void GameStart()
+    public void CrownSpawn()
     {
         var crown = phMan.ReturnSpawnedRoomObject(crownPrefab.name, crownSpawners.transform.position, Quaternion.identity);
         crownController = crown.GetComponent<CrownController>();
@@ -68,9 +69,19 @@ public class GameManager : MonoBehaviourPun
     #region RPCMethods
 
     [PunRPC]
-    public void EndGame(PlayerController player)
+    public void EndGame()
     {
-        Debug.Log(player.name + " Wins");
+        int currentWinner = 0;
+
+        for (int i = 0; i < playersInMatch.Count; i++)
+        {
+            if (currentWinner != i && playersInMatch[currentWinner].points < playersInMatch[i].points)
+            {
+                currentWinner = i;
+            }
+        }
+
+        mainCamera.transform.position = playersInMatch[currentWinner].cameraWinTransform.position;
     }
 
     [PunRPC]

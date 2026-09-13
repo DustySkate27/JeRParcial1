@@ -15,8 +15,10 @@ public class PlayerController : MonoBehaviourPun
     private bool gameScene = false;
 
     private float rtPoints;
-    private int points;
-    private int ID;
+    public int points;
+    public int ID;
+
+    public bool haveShield = false;
 
     [SerializeField] private LayerMask bulletDetectionLayer;
 
@@ -45,7 +47,9 @@ public class PlayerController : MonoBehaviourPun
     public Transform crownPosition;
     private bool haveCrown;
 
-    public bool haveShield = false;
+    [Header("Camera Winning Position")]
+    [SerializeField] public Transform cameraWinTransform;
+
 
     public void InitializeWait(WaitingPhotonManager ph, WaitManager wm, int ID)
     {
@@ -177,7 +181,6 @@ public class PlayerController : MonoBehaviourPun
         photonView.RPC(nameof(QuitCrown), RpcTarget.All);
     }
 
-
     public void AddShield()
     {
         photonView.RPC(nameof(ActiveShield), RpcTarget.All);
@@ -187,6 +190,8 @@ public class PlayerController : MonoBehaviourPun
     {
         photonView.RPC(nameof(DeactiveShield), RpcTarget.All);
     }
+
+
     private void OnDrawGizmosSelected()
     {
         if (checkFloor == null) return;
@@ -221,11 +226,12 @@ public class PlayerController : MonoBehaviourPun
         Debug.Log(this + "Have Shield" + haveShield);
     }
 
+    #endregion
+
     private void OnApplicationQuit()
     {
         photonView.RPC(nameof(gm.PlayerQuitParty), RpcTarget.All);
     }
-    #endregion
 
     private void OnTriggerEnter(Collider other)
     {

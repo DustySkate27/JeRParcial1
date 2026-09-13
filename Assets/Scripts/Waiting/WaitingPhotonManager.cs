@@ -55,11 +55,6 @@ public class WaitingPhotonManager : MonoBehaviourPunCallbacks
         return PhotonNetwork.Instantiate(name, position, rotation, group: 0);
     }
 
-    public void DestroyObject(GameObject obj)
-    {
-        PhotonNetwork.Destroy(obj);
-    }
-
     private int AmountOfPlayers()
     {
         return PhotonNetwork.CurrentRoom.PlayerCount;
