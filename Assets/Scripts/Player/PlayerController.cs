@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Rendering.UI;
 using UnityEngine.SceneManagement;
 
-public class PlayerController : MonoBehaviourPun
+public class PlayerController : MonoBehaviourPun, IPunObservable
 {
     private GameplayPhotonManager phMan;
     private WaitingPhotonManager phWait;
@@ -220,6 +220,18 @@ public class PlayerController : MonoBehaviourPun
         haveSpeedBost = true;
     }
 
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(points);
+        }
+        else
+        {
+            points = (int)stream.ReceiveNext();
+        }
+    }
+
     private void OnDrawGizmosSelected()
     {
         if (checkFloor == null) return;
@@ -272,4 +284,6 @@ public class PlayerController : MonoBehaviourPun
             }
         }
     }
+
+    
 }
