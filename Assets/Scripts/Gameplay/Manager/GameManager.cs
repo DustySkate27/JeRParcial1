@@ -129,6 +129,7 @@ public class GameManager : MonoBehaviourPun
 
     private IEnumerator ReturningToWaitingScene()
     {
+        matchStarted = false;
         yield return new WaitForSeconds(10f);
 
         PhotonNetwork.AutomaticallySyncScene = true;
