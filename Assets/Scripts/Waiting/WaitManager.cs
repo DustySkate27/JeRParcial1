@@ -28,6 +28,14 @@ public class WaitManager : MonoBehaviourPun
         return player;
     }
 
+    public void TransitionIsReady()
+    {
+        if(transitionReady && PhotonNetwork.IsMasterClient)
+        {
+            phWait.GameStartConfirmed();
+        }
+    }
+
     public void RoomReady()
     {
         waitText.SetActive(false);

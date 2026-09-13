@@ -99,9 +99,9 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             }
         }
 
-        if(gameScene == false && Input.GetKeyDown(KeyCode.S) && PhotonNetwork.IsMasterClient)
+        if(gameScene == false && Input.GetKeyDown(KeyCode.S))
         {
-            phWait.GameStartConfirmed();
+            wm.TransitionIsReady();
         }
 
         if (haveCrown)

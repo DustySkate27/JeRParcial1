@@ -38,7 +38,7 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
             SceneManager.LoadScene("MainMenuScene");
         }
 
-        gm.CrownSpawn();
+        gm.StartMatch();
         gm.currentTime = 0;
     }
 
@@ -90,7 +90,7 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
 
         if(gm.crownController == null)
         {
-            gm.CrownSpawn();
+            gm.StartMatch();
         }
     }
 

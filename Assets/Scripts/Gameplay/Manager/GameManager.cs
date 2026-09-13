@@ -41,12 +41,14 @@ public class GameManager : MonoBehaviourPun
             currentTime += Time.deltaTime;
             EndCondition();
         }
+
     }
 
-    public void CrownSpawn()
+    public void StartMatch()
     {
         var crown = phMan.ReturnSpawnedRoomObject(crownPrefab.name, crownSpawners.transform.position, Quaternion.identity);
         crownController = crown.GetComponent<CrownController>();
+        matchStarted = true;
         Debug.Log("The party has started");
     }
 
