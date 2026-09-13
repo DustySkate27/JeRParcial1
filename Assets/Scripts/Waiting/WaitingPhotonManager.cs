@@ -9,10 +9,10 @@ public class WaitingPhotonManager : MonoBehaviourPunCallbacks
 
     public int PlayerCount => AmountOfPlayers();
 
-    private bool isMaster;
-
     private void Start()
     {
+        PhotonNetwork.AutomaticallySyncScene = true;
+
         InitializeScene();
     }
 
@@ -21,11 +21,16 @@ public class WaitingPhotonManager : MonoBehaviourPunCallbacks
         string roomName = PhotonNetwork.CurrentRoom.Name;
         int playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
 
-        isMaster = PhotonNetwork.IsMasterClient;
-
-        if (playerCount < 4)
+        if (playerCount < PhotonNetwork.CurrentRoom.MaxPlayers)
         {
-            wm.SpawnPlayer(playerCount);
+            if (PhotonNetwork.IsMasterClient)
+            {
+                wm.SpawnPlayer(0);
+            }
+            else
+            {
+                wm.SpawnPlayer(GetPlayerID());
+            }
         }
         else
         {
@@ -33,9 +38,13 @@ public class WaitingPhotonManager : MonoBehaviourPunCallbacks
         }
     }
 
+    private int GetPlayerID()
+    {
+        return PhotonNetwork.LocalPlayer.ActorNumber - 1;
+    }
+
     public void GameStartConfirmed()
     {
-        PhotonNetwork.AutomaticallySyncScene = true;
         PhotonNetwork.LoadLevel("GameScene");
     }
 
@@ -58,16 +67,17 @@ public class WaitingPhotonManager : MonoBehaviourPunCallbacks
     {
         base.OnPlayerEnteredRoom(newPlayer);
 
-        Debug.Log(PlayerCount);
-        if (PlayerCount > 1)
-            wm.RoomReady();
+        if (!PhotonNetwork.IsMasterClient) return;
+
+        wm.PlayerEnteredParty();
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         base.OnPlayerLeftRoom(otherPlayer);
-        Debug.Log(PlayerCount);
-        if (PlayerCount < 1)
-            wm.RoomNotReady();
+
+        if (!PhotonNetwork.IsMasterClient) return;
+
+        wm.PlayerEnteredParty();
     }
 }

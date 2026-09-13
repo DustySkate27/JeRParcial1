@@ -77,7 +77,7 @@ public class PlayerController : MonoBehaviourPun
     {
         if (!photonView.IsMine) return;
 
-        if(gameScene == false && Input.GetKeyDown(KeyCode.S))
+        if(PhotonNetwork.IsMasterClient && gameScene == false && Input.GetKeyDown(KeyCode.S) && wm.transitionReady)
         {
             phWait.GameStartConfirmed();
         }
@@ -198,9 +198,6 @@ public class PlayerController : MonoBehaviourPun
         haveCrown = false;
     }
 
-    private void OnApplicationQuit()
-    {
-        photonView.RPC(nameof(gm.PlayerQuitParty), RpcTarget.All);
-    }
+    
     #endregion
 }

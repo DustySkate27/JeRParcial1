@@ -124,6 +124,7 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
             Debug.Log("Entré con password");
             insertedPassword = password;
             OnLoadingRoom(screen);
+            PhotonNetwork.AutomaticallySyncScene = false;
             PhotonNetwork.JoinRoom(roomName); 
         }
         else
@@ -178,6 +179,7 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
 
         errorCanvas.SetActive(false);
         mainCanvas.SetActive(true);
+        PhotonNetwork.Disconnect();
     }
 
     public override void OnCreatedRoom()
@@ -192,24 +194,22 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
         base.OnJoinedRoom();
 
         PhotonNetwork.LeaveLobby();
-        PhotonNetwork.AutomaticallySyncScene = true;
 
-        if (PhotonNetwork.CurrentRoom.PlayerCount != 1) 
+        if (!PhotonNetwork.IsMasterClient) 
         {
             PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("password", out object storedPwd);
 
-            if (string.IsNullOrEmpty((string)storedPwd))
+            if (string.IsNullOrEmpty((string)storedPwd) || insertedPassword == (string)storedPwd)
             {
-                Debug.Log("era sala publica");
+                Debug.Log("era sala publica o contraseña correcta");
+                PhotonNetwork.LoadLevel("WaitingScene");
             }
             else if(insertedPassword == null || insertedPassword != (string)storedPwd)
             {
                 PhotonNetwork.LeaveRoom();
-                PhotonNetwork.Disconnect();
                 StartCoroutine(ErrorIncorrectPassword(loadingCanvas));
-                SceneManager.LoadScene("MainMenuScene");
                 return;
-            } 
+            }
         }
         else
         {
@@ -239,6 +239,13 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
         errorCanvas.SetActive(true);
 
         Debug.LogError($"Create Room Failed | Code: {returnCode} | {message}");
+    }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        base.OnDisconnected(cause);
+
+        SceneManager.LoadScene("MainMenuScene");
     }
 
     #endregion

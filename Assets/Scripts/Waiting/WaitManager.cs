@@ -18,11 +18,14 @@ public class WaitManager : MonoBehaviourPun
     [SerializeField] private List<Material> playerMaterials;
     public List<Material> PlayerMaterials => playerMaterials;
 
-    public void SpawnPlayer(int ID)
+    public bool transitionReady = false;
+
+    public PlayerController SpawnPlayer(int ID)
     {
-        GameObject currentPlayer = phWait.ReturnSpawnedObject(playerPrefab.name, playerSpawners[ID - 1].transform.position, Quaternion.identity);
+        GameObject currentPlayer = phWait.ReturnSpawnedObject(playerPrefab.name, playerSpawners[ID].transform.position, Quaternion.identity);
         PlayerController player = currentPlayer.GetComponent<PlayerController>();
         player.InitializeWait(phWait, this, ID);
+        return player;
     }
 
     public void RoomReady()
@@ -37,12 +40,18 @@ public class WaitManager : MonoBehaviourPun
         readyText.SetActive(false);
     }
 
-    [PunRPC]
-    public void PlayerQuitParty()
+    public void PlayerEnteredParty()
     {
         if (phWait.PlayerCount < 2)
         {
-            Debug.Log("No apto para iniciar");
+            transitionReady = false;
+            RoomNotReady();
         }
+        else
+        {
+            transitionReady = true;
+            RoomReady();
+        }
+        
     }
 }
