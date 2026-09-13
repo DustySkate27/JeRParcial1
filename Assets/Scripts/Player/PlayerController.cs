@@ -106,6 +106,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
         if (haveCrown)
         {
+            Debug.Log("sumando!");
             AddPoint();
         }
 
