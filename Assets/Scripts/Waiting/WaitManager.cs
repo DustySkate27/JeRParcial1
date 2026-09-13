@@ -31,6 +31,12 @@ public class WaitManager : MonoBehaviourPun
         readyText.SetActive(true);
     }
 
+    public void RoomNotReady()
+    {
+        waitText.SetActive(true);
+        readyText.SetActive(false);
+    }
+
     [PunRPC]
     public void PlayerQuitParty()
     {
