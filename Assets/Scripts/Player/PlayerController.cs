@@ -42,6 +42,8 @@ public class PlayerController : MonoBehaviourPun
     public Transform crownPosition;
     private bool haveCrown;
 
+    public bool haveShield = false;
+
     public void InitializeWait(WaitingPhotonManager ph, WaitManager wm, int ID)
     {
         rb = gameObject.GetComponent<Rigidbody>();
@@ -77,7 +79,7 @@ public class PlayerController : MonoBehaviourPun
     {
         if (!photonView.IsMine) return;
 
-        if(PhotonNetwork.IsMasterClient && gameScene == false && Input.GetKeyDown(KeyCode.S) && wm.transitionReady)
+        if(gameScene == false && Input.GetKeyDown(KeyCode.S))
         {
             phWait.GameStartConfirmed();
         }
@@ -185,6 +187,16 @@ public class PlayerController : MonoBehaviourPun
         Gizmos.DrawWireSphere(checkFloor.position, checkFloorDistance);
     }
 
+    public void AddShield()
+    {
+        photonView.RPC(nameof(ActiveShield), RpcTarget.All);
+    }
+
+    public void QuitShield()
+    {
+        photonView.RPC(nameof(DeactiveShield), RpcTarget.All);
+    }
+
     #region RPCMethods
     [PunRPC]
     private void AddCrown()
@@ -198,6 +210,23 @@ public class PlayerController : MonoBehaviourPun
         haveCrown = false;
     }
 
-    
+    [PunRPC]
+    private void ActiveShield()
+    {
+        haveShield = true;
+        Debug.Log(this + "Have Shield" +  haveShield);
+    }
+
+    [PunRPC]
+    private void DeactiveShield()
+    {
+        haveShield = false;
+        Debug.Log(this + "Have Shield" + haveShield);
+    }
+
+    private void OnApplicationQuit()
+    {
+        photonView.RPC(nameof(gm.PlayerQuitParty), RpcTarget.All);
+    }
     #endregion
 }
