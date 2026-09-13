@@ -10,6 +10,8 @@ public class LaserMovement : MonoBehaviourPun
     [SerializeField] private float timeLimit = 2;
     private float currentTime = 0;
 
+    private bool isDestroyed = false;
+
     [SerializeField] private LayerMask wallDetectionLayer;
 
     void Update()
@@ -42,6 +44,8 @@ public class LaserMovement : MonoBehaviourPun
 
     private void DestroyLaser()
     {
+        if (isDestroyed) return;
+        isDestroyed = true;
         PhotonNetwork.Destroy(gameObject);
     }
 }
