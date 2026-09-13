@@ -117,7 +117,11 @@ public class GameManager : MonoBehaviourPun
                 Debug.Log(currentWinner);
             }
         }
-        mainCamera.transform.position = playersInMatch[currentWinner].cameraWinTransform.position;
+
+        playersInMatch[currentWinner].canMove = false;
+        Vector3 position = playersInMatch[currentWinner].cameraWinTransform.position;
+        mainCamera.transform.position = position;
+
     }
 
     [PunRPC]

@@ -40,6 +40,7 @@ public class WaitingPhotonManager : MonoBehaviourPunCallbacks
         }
 
         Debug.Log(PhotonNetwork.MasterClient.ActorNumber);
+        wm.PlayerEnteredParty();
 
     }
 

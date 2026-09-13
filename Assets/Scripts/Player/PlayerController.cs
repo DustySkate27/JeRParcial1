@@ -31,6 +31,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [SerializeField] private LayerMask floorLayer;
     [SerializeField] private Transform checkFloor;
     [SerializeField] private float checkFloorDistance;
+    public bool canMove = true;
     private float moveDirection;
     private bool isFacingRight = true;
     private bool canJump = false;
@@ -82,6 +83,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     void Update()
     {
         if (!photonView.IsMine) return;
+
+        if (!canMove) return;
 
         if (haveSpeedBost)
         {
