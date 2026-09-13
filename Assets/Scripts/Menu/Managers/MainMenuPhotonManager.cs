@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using TMPro;
 using System.Collections;
 using UnityEngine.Device;
+using UnityEngine.SceneManagement;
 public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
 {
     [Header("Scene Objects")]
@@ -204,6 +205,8 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
             else if(insertedPassword == null || insertedPassword != (string)storedPwd)
             {
                 PhotonNetwork.LeaveRoom();
+                PhotonNetwork.Disconnect();
+                SceneManager.LoadScene("MainMenuScene");
                 StartCoroutine(ErrorIncorrectPassword(loadingCanvas));
                 return;
             } 
