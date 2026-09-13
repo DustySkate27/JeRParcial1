@@ -14,6 +14,7 @@ public class LaserMovement : MonoBehaviourPun
 
     void Update()
     {
+        if (!photonView.IsMine) return;
         currentTime += Time.deltaTime;
 
         if (currentTime > timeLimit)
