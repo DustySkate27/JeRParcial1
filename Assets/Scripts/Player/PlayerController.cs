@@ -87,6 +87,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     // Update is called once per frame
     void Update()
     {
+        if (!photonView.IsMine) return;
+
         if (haveSpeedBost)
         {
             speedBostDuration -= Time.deltaTime;
@@ -97,9 +99,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             }
         }
 
-        if (!photonView.IsMine) return;
-
-        if(gameScene == false && Input.GetKeyDown(KeyCode.S))
+        if(gameScene == false && Input.GetKeyDown(KeyCode.S) && PhotonNetwork.IsMasterClient)
         {
             phWait.GameStartConfirmed();
         }
