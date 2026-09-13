@@ -46,7 +46,9 @@ public class GameManager : MonoBehaviourPun
     public void StartMatch()
     {
         var crown = phMan.ReturnSpawnedRoomObject(crownPrefab.name, crownSpawners.transform.position, Quaternion.identity);
-        crownController = crown.GetComponent<CrownController>();
+        int crownViewID = crown.GetComponent<PhotonView>().ViewID;
+
+        photonView.RPC(nameof(RegisterCrown), RpcTarget.All, crownViewID);
         matchStarted = true;
     }
 
@@ -68,6 +70,15 @@ public class GameManager : MonoBehaviourPun
     }
 
     #region RPCMethods
+
+    [PunRPC]
+    public void RegisterCrown(int viewID)
+    {
+        PhotonView pv = PhotonView.Find(viewID);
+        if (pv == null) return;
+
+        crownController = pv.GetComponent<CrownController>();
+    }
 
     [PunRPC]
     public void RegisterPlayer(int ID, int viewID)

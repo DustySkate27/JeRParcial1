@@ -27,6 +27,8 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
             if (PhotonNetwork.IsMasterClient)
             {
                 gm.SpawnPlayer(0);
+                gm.StartMatch();
+                gm.currentTime = 0;
             }
             else
             {
@@ -39,8 +41,7 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
             SceneManager.LoadScene("MainMenuScene");
         }
 
-        gm.StartMatch();
-        gm.currentTime = 0;
+        
     }
 
     private int GetPlayerID()
