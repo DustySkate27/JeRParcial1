@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using TMPro;
@@ -20,8 +21,6 @@ public class GameManager : MonoBehaviourPun
 
     [Header("WinCondition")]
     [SerializeField] private float matchDuration;
-    [SerializeField] private int winningPoints;
-    public int WinningPoints => winningPoints;
     public float currentTime;
     private bool matchStarted;
 
@@ -31,7 +30,7 @@ public class GameManager : MonoBehaviourPun
     [SerializeField] private GameObject crownSpawners;
     public CrownController crownController;
 
-    public Dictionary<int, PlayerController> playersInMatch;
+    public List<PlayerController> playersInMatch;
 
     private void Update()
     {
@@ -63,6 +62,7 @@ public class GameManager : MonoBehaviourPun
         if (currentTime >= matchDuration)
         {
             photonView.RPC(nameof(EndGame), RpcTarget.All);
+            StartCoroutine(ReturningToWaitingScene());
         }
     }
 
@@ -99,4 +99,12 @@ public class GameManager : MonoBehaviourPun
         }
     }
     #endregion
+
+    private IEnumerator ReturningToWaitingScene()
+    {
+        yield return new WaitForSeconds(10f);
+
+        PhotonNetwork.AutomaticallySyncScene = true;
+        PhotonNetwork.LoadLevel("WaitingScene");
+    }
 }

@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 public class GameplayPhotonManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] private GameManager gm;
-    [SerializeField] private string roomName;
 
     public int PlayerCount => AmountOfPlayers();
 
