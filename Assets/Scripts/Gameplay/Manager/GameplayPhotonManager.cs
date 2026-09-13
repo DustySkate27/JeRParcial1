@@ -86,10 +86,9 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.IsMasterClient)
         {
-            var leftPlayer = gm.playersInMatch.Find(p => p.ID == leftID);
-            if (leftPlayer != null)
+            if (gm.playersInMatch.ContainsKey(leftID))
             {
-                gm.photonView.RPC(nameof(gm.UnregisterPlayer), RpcTarget.All, leftPlayer.photonView.ViewID);
+                gm.photonView.RPC(nameof(gm.UnregisterPlayer), RpcTarget.All, leftID);
             }
 
             if (PlayerCount < 2)

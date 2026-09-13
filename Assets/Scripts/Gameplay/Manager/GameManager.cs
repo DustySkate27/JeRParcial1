@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviourPun
     [SerializeField] private GameObject crownSpawners;
     public CrownController crownController;
 
-    public List<PlayerController> playersInMatch;
+    public Dictionary<int, PlayerController> playersInMatch = new Dictionary<int, PlayerController>();
 
     private void Update()
     {
@@ -55,7 +55,7 @@ public class GameManager : MonoBehaviourPun
         GameObject currentPlayer = phMan.ReturnSpawnedObject(playerPrefab.name, playerSpawners[ID].transform.position, Quaternion.identity);
         PlayerController player = currentPlayer.GetComponent<PlayerController>();
         player.InitializeGame(phMan, this, ID);
-        photonView.RPC(nameof(RegisterPlayer), RpcTarget.All, player.photonView.ViewID);
+        photonView.RPC(nameof(RegisterPlayer), RpcTarget.All, ID, player.photonView.ViewID);
     }
 
     public void EndCondition()
@@ -70,59 +70,43 @@ public class GameManager : MonoBehaviourPun
     #region RPCMethods
 
     [PunRPC]
-    public void RegisterPlayer(int viewID)
+    public void RegisterPlayer(int ID, int viewID)
     {
         PhotonView pv = PhotonView.Find(viewID);
         if (pv == null) return;
 
-        PlayerController player = pv.GetComponent<PlayerController>();
-        if (!playersInMatch.Contains(player))
-        {
-            playersInMatch.Add(player);
-        }
+        playersInMatch[ID] = pv.GetComponent<PlayerController>();
     }
 
     [PunRPC]
-    public void UnregisterPlayer(int viewID)
+    public void UnregisterPlayer(int ID)
     {
-        PhotonView pv = PhotonView.Find(viewID);
-
-        PlayerController player = null;
-
-        if (pv != null)
-        {
-            player = pv.GetComponent<PlayerController>();
-        }
-
-        if (player != null)
-        {
-            playersInMatch.Remove(player);
-        }
-        else
-        {
-            playersInMatch.RemoveAll(p => p == null);
-        }
+        playersInMatch.Remove(ID);
     }
 
     [PunRPC]
     public void EndGame()
     {
-        int currentWinner = 0;
+        int currentWinner = -1;
+        int highestPoints = -1;
 
-        for (int i = 0; i < playersInMatch.Count; i++)
+        foreach (var players in playersInMatch)
         {
-            if (currentWinner != i && playersInMatch[currentWinner].points < playersInMatch[i].points)
+            if (players.Value.points > highestPoints)
             {
-                currentWinner = i;
-                Debug.Log(currentWinner);
+                highestPoints = players.Value.points;
+                currentWinner = players.Key;
             }
         }
 
-        playersInMatch[currentWinner].canMove = false;
-        crownController.isCrownTaken = false;
-        Vector3 position = new Vector3(playersInMatch[currentWinner].cameraWinTransform.position.x, playersInMatch[currentWinner].cameraWinTransform.position.y);
-        mainCamera.transform.position = position;
+        if (currentWinner == -1) return;
 
+        PlayerController winner = playersInMatch[currentWinner];
+        winner.canMove = false;
+        crownController.isCrownTaken = false;
+
+        Vector3 position = new Vector3(winner.cameraWinTransform.position.x, winner.cameraWinTransform.position.y, mainCamera.transform.position.z);
+        mainCamera.transform.position = position;
     }
 
     [PunRPC]
