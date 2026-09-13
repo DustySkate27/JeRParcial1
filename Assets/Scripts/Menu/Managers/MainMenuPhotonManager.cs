@@ -206,8 +206,8 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
             {
                 PhotonNetwork.LeaveRoom();
                 PhotonNetwork.Disconnect();
-                SceneManager.LoadScene("MainMenuScene");
                 StartCoroutine(ErrorIncorrectPassword(loadingCanvas));
+                SceneManager.LoadScene("MainMenuScene");
                 return;
             } 
         }

@@ -58,14 +58,15 @@ public class WaitingPhotonManager : MonoBehaviourPunCallbacks
     {
         base.OnPlayerEnteredRoom(newPlayer);
 
-        if(PlayerCount > 1)
+        Debug.Log(PlayerCount);
+        if (PlayerCount > 1)
             wm.RoomReady();
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         base.OnPlayerLeftRoom(otherPlayer);
-
+        Debug.Log(PlayerCount);
         if (PlayerCount < 1)
             wm.RoomNotReady();
     }
