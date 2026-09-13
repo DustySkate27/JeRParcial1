@@ -7,7 +7,7 @@ public class CrownController : MonoBehaviourPun
     [SerializeField] private float afterDropCD;
     private float currentTime = 0;
     private bool canPickDroppedCrown = true;
-    private bool isCrownTaken = false;
+    public bool isCrownTaken = false;
 
     [SerializeField] private LayerMask playerDetectionLayer;
     [SerializeField] private LayerMask bulletDetectionLayer;

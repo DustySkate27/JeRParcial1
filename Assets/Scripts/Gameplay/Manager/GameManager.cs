@@ -119,7 +119,8 @@ public class GameManager : MonoBehaviourPun
         }
 
         playersInMatch[currentWinner].canMove = false;
-        Vector3 position = playersInMatch[currentWinner].cameraWinTransform.position;
+        crownController.isCrownTaken = false;
+        Vector3 position = new Vector3(playersInMatch[currentWinner].cameraWinTransform.position.x, playersInMatch[currentWinner].cameraWinTransform.position.y);
         mainCamera.transform.position = position;
 
     }
