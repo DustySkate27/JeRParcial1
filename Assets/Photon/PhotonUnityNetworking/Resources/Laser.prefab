@@ -130,7 +130,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RayMovement
   owner: {fileID: 0}
   rb: {fileID: 769083718538947933}
-  speed: 100
+  speed: 40
   timeLimit: 2
   wallDetectionLayer:
     serializedVersion: 2

@@ -1,13 +1,13 @@
 using UnityEngine;
 using Photon.Pun;
 using System.Collections.Generic;
+using Photon.Realtime;
 
 public class WaitingPhotonManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] private WaitManager wm;
 
     public int PlayerCount => AmountOfPlayers();
-
 
     private bool isMaster;
 
@@ -33,6 +33,12 @@ public class WaitingPhotonManager : MonoBehaviourPunCallbacks
         }
     }
 
+    public void GameStartConfirmed()
+    {
+        PhotonNetwork.AutomaticallySyncScene = true;
+        PhotonNetwork.LoadLevel("GameScene");
+    }
+
     public GameObject ReturnSpawnedObject(string name, Vector3 position, Quaternion rotation)
     {
         return PhotonNetwork.Instantiate(name, position, rotation, group: 0);
@@ -46,5 +52,13 @@ public class WaitingPhotonManager : MonoBehaviourPunCallbacks
     private int AmountOfPlayers()
     {
         return PhotonNetwork.CurrentRoom.PlayerCount;
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        base.OnPlayerEnteredRoom(newPlayer);
+
+        if(PlayerCount > 1)
+            wm.RoomReady();
     }
 }

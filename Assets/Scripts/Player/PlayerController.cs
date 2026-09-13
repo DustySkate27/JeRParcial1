@@ -42,7 +42,6 @@ public class PlayerController : MonoBehaviourPun
     public Transform crownPosition;
     private bool haveCrown;
 
-
     public void InitializeWait(WaitingPhotonManager ph, WaitManager wm, int ID)
     {
         rb = gameObject.GetComponent<Rigidbody>();
@@ -77,6 +76,11 @@ public class PlayerController : MonoBehaviourPun
     void Update()
     {
         if (!photonView.IsMine) return;
+
+        if(gameScene == false && Input.GetKeyDown(KeyCode.S))
+        {
+            phWait.GameStartConfirmed();
+        }
 
         if (haveCrown)
         {
@@ -117,6 +121,7 @@ public class PlayerController : MonoBehaviourPun
         if (rb == null) return;
 
         Move();
+        
         if (canJump && jump)
         {
             Jump();
@@ -192,9 +197,10 @@ public class PlayerController : MonoBehaviourPun
     {
         haveCrown = false;
     }
+
     private void OnApplicationQuit()
     {
-        photonView.RPC(nameof(gm.PlayerQuitParty), RpcTarget.All, this);
+        photonView.RPC(nameof(gm.PlayerQuitParty), RpcTarget.All);
     }
     #endregion
 }
