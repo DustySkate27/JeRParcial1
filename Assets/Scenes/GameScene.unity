@@ -633,7 +633,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 9a766396accb9284e88f87f7da17feee, type: 2}
   - {fileID: 2100000, guid: 0464ab36257f0394f87bc1af83a68ce7, type: 2}
   - {fileID: 2100000, guid: c282e811e1fa26a45bd7ae3bb496f44f, type: 2}
-  matchDuration: 100
+  matchDuration: 30
   currentTime: 0
   crownPrefab: {fileID: 2929724351776186149, guid: ab8e9654373f5494189d348920916b20, type: 3}
   crownSpawners: {fileID: 2038831133}

@@ -264,7 +264,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     private void OnApplicationQuit()
     {
-        photonView.RPC(nameof(gm.PlayerQuitParty), RpcTarget.All);
+        gm.PlayerQuitParty(this);
     }
 
     private void OnTriggerEnter(Collider other)

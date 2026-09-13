@@ -41,7 +41,6 @@ public class GameManager : MonoBehaviourPun
             currentTime += Time.deltaTime;
             EndCondition();
         }
-
     }
 
     public void StartMatch()
@@ -56,6 +55,7 @@ public class GameManager : MonoBehaviourPun
         GameObject currentPlayer = phMan.ReturnSpawnedObject(playerPrefab.name, playerSpawners[ID].transform.position, Quaternion.identity);
         PlayerController player = currentPlayer.GetComponent<PlayerController>();
         player.InitializeGame(phMan, this, ID);
+        photonView.RPC(nameof(RegisterPlayer), RpcTarget.All);
     }
 
     public void EndCondition()
@@ -68,6 +68,18 @@ public class GameManager : MonoBehaviourPun
     }
 
     #region RPCMethods
+
+    [PunRPC]
+    public void RegisterPlayer(PlayerController player)
+    {
+        playersInMatch.Add(player);
+    }
+
+    [PunRPC]
+    public void UnregisterPlayer(PlayerController player)
+    {
+        playersInMatch.Remove(player);
+    }
 
     [PunRPC]
     public void EndGame()
@@ -91,12 +103,13 @@ public class GameManager : MonoBehaviourPun
         Debug.Log(" Canceled game. Disconneting...");
     }
 
-    [PunRPC]
-    public void PlayerQuitParty()
+    public void PlayerQuitParty(PlayerController player)
     {
+        photonView.RPC(nameof(UnregisterPlayer), RpcTarget.All, player);
         if (phMan.PlayerCount < 2)
         {
-            photonView.RPC(nameof(CancelGame), RpcTarget.All);
+            PhotonNetwork.AutomaticallySyncScene = true;
+            PhotonNetwork.LoadLevel("WaitingScene");
         }
     }
     #endregion
