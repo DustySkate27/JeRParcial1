@@ -262,11 +262,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     #endregion
 
-    private void OnApplicationQuit()
-    {
-        gm.PlayerQuitParty(this);
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if ((bulletDetectionLayer.value & (1 << other.gameObject.layer)) != 0)

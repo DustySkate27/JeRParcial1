@@ -1,6 +1,7 @@
 using Photon.Pun;
 using Photon.Realtime;
 using System;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -81,14 +82,24 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
     {
         base.OnPlayerLeftRoom(otherPlayer);
 
+        int leftID = otherPlayer.ActorNumber - 1;
+
         if (PhotonNetwork.IsMasterClient)
         {
-            //Pause for 5 seconds.
-            //If it doesn't come back, PhotonNetwork.SetMasterClient.
-            //Catch currentTime and send it to the new MasterClient.
+            var leftPlayer = gm.playersInMatch.Find(p => p.ID == leftID);
+            if (leftPlayer != null)
+            {
+                gm.photonView.RPC(nameof(gm.UnregisterPlayer), RpcTarget.All, leftPlayer.photonView.ViewID);
+            }
+
+            if (PlayerCount < 2)
+            {
+                PhotonNetwork.AutomaticallySyncScene = true;
+                PhotonNetwork.LoadLevel("WaitingScene");
+            }
         }
 
-        if(gm.crownController == null)
+        if (gm.crownController == null)
         {
             gm.StartMatch();
         }

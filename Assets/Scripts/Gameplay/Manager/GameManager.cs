@@ -55,7 +55,7 @@ public class GameManager : MonoBehaviourPun
         GameObject currentPlayer = phMan.ReturnSpawnedObject(playerPrefab.name, playerSpawners[ID].transform.position, Quaternion.identity);
         PlayerController player = currentPlayer.GetComponent<PlayerController>();
         player.InitializeGame(phMan, this, ID);
-        photonView.RPC(nameof(RegisterPlayer), RpcTarget.All);
+        photonView.RPC(nameof(RegisterPlayer), RpcTarget.All, player.photonView.ViewID);
     }
 
     public void EndCondition()
@@ -70,15 +70,38 @@ public class GameManager : MonoBehaviourPun
     #region RPCMethods
 
     [PunRPC]
-    public void RegisterPlayer(PlayerController player)
+    public void RegisterPlayer(int viewID)
     {
-        playersInMatch.Add(player);
+        PhotonView pv = PhotonView.Find(viewID);
+        if (pv == null) return;
+
+        PlayerController player = pv.GetComponent<PlayerController>();
+        if (!playersInMatch.Contains(player))
+        {
+            playersInMatch.Add(player);
+        }
     }
 
     [PunRPC]
-    public void UnregisterPlayer(PlayerController player)
+    public void UnregisterPlayer(int viewID)
     {
-        playersInMatch.Remove(player);
+        PhotonView pv = PhotonView.Find(viewID);
+
+        PlayerController player = null;
+
+        if (pv != null)
+        {
+            player = pv.GetComponent<PlayerController>();
+        }
+
+        if (player != null)
+        {
+            playersInMatch.Remove(player);
+        }
+        else
+        {
+            playersInMatch.RemoveAll(p => p == null);
+        }
     }
 
     [PunRPC]
@@ -101,16 +124,6 @@ public class GameManager : MonoBehaviourPun
     public void CancelGame()
     {
         Debug.Log(" Canceled game. Disconneting...");
-    }
-
-    public void PlayerQuitParty(PlayerController player)
-    {
-        photonView.RPC(nameof(UnregisterPlayer), RpcTarget.All, player);
-        if (phMan.PlayerCount < 2)
-        {
-            PhotonNetwork.AutomaticallySyncScene = true;
-            PhotonNetwork.LoadLevel("WaitingScene");
-        }
     }
     #endregion
 
