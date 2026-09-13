@@ -49,7 +49,6 @@ public class GameManager : MonoBehaviourPun
         var crown = phMan.ReturnSpawnedRoomObject(crownPrefab.name, crownSpawners.transform.position, Quaternion.identity);
         crownController = crown.GetComponent<CrownController>();
         matchStarted = true;
-        Debug.Log("The party has started");
     }
 
     public void SpawnPlayer(int ID)
@@ -82,7 +81,6 @@ public class GameManager : MonoBehaviourPun
                 currentWinner = i;
             }
         }
-
         mainCamera.transform.position = playersInMatch[currentWinner].cameraWinTransform.position;
     }
 

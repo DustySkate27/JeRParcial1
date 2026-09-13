@@ -64,9 +64,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         gameScene = false;
 
         render.material = wm.PlayerMaterials[ID];
-
-        Debug.Log(gm);
-        Debug.Log(gameObject.name + " has join the party");
     }
 
     public void InitializeGame(GameplayPhotonManager ph, GameManager gm, int ID)
@@ -79,9 +76,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         gameScene = true;
 
         render.material = gm.PlayerMaterials[ID];
-
-        Debug.Log(gm);
-        Debug.Log(gameObject.name + " has join the party");
     }
 
     // Update is called once per frame
@@ -106,7 +100,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
         if (haveCrown)
         {
-            Debug.Log("sumando!");
             AddPoint();
         }
 

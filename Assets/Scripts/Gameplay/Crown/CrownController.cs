@@ -39,8 +39,6 @@ public class CrownController : MonoBehaviourPun
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("colisione con algo");
-
         // Comprobación correcta con bitmask
         if ((playerDetectionLayer.value & (1 << other.gameObject.layer)) != 0)
         {
@@ -61,6 +59,8 @@ public class CrownController : MonoBehaviourPun
             canPickDroppedCrown = false;
             isCrownTaken = false;
             currentPlayer.CallQuitCrown();
+            transform.position = currentPlayer.transform.position;
+            currentPlayer = null;
         }
     }
 }
