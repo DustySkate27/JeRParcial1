@@ -1,10 +1,10 @@
 using Photon.Pun;
-using Unity.Multiplayer.PlayMode;
 using UnityEngine;
 
-public class ShieldPower : MonoBehaviour
+public class SpeedPower : MonoBehaviour
 {
-    [SerializeField] private float shieldDuration = 5f;
+    [SerializeField] private float speedBostTime = 1f;
+    [SerializeField] private float speedBostDuration = 5f;
     private float currentTime = 0;
 
     [SerializeField] private LayerMask playerDetectionLayer;
@@ -13,7 +13,7 @@ public class ShieldPower : MonoBehaviour
     {
         currentTime += Time.deltaTime;
 
-        if (currentTime > shieldDuration)
+        if (currentTime > speedBostDuration)
         {
             DestroyShield();
         }
@@ -23,9 +23,9 @@ public class ShieldPower : MonoBehaviour
     {
         if ((playerDetectionLayer.value & (1 << other.gameObject.layer)) != 0)
         {
-            Debug.Log("Shield adquierido por" + other.name);
+            Debug.Log("SpeedBost adquierido por" + other.name);
             PlayerController player = other.gameObject.GetComponent<PlayerController>();
-            player.AddShield();
+            player.AddSpeedBost(speedBostTime);
         }
 
         DestroyShield();
@@ -35,5 +35,4 @@ public class ShieldPower : MonoBehaviour
     {
         PhotonNetwork.Destroy(gameObject);
     }
-
 }

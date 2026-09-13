@@ -19,6 +19,9 @@ public class PlayerController : MonoBehaviourPun
     public int ID;
 
     public bool haveShield = false;
+    public bool haveSpeedBost = false;
+    private float speedBostDuration;
+    [SerializeField] private float speedMult = 2f;
 
     [SerializeField] private LayerMask bulletDetectionLayer;
 
@@ -84,6 +87,16 @@ public class PlayerController : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
+        if (haveSpeedBost)
+        {
+            speedBostDuration -= Time.deltaTime;
+
+            if (speedBostDuration < 0)
+            {
+                haveSpeedBost = false;
+            }
+        }
+
         if (!photonView.IsMine) return;
 
         if(gameScene == false && Input.GetKeyDown(KeyCode.S))
@@ -139,7 +152,17 @@ public class PlayerController : MonoBehaviourPun
 
     public void Move()
     {
-        Vector3 movement = new Vector3(moveDirection, 0f, 0f) * speed;
+        Vector3 movement;
+
+        if (haveSpeedBost)
+        {
+            movement = new Vector3(moveDirection, 0f, 0f) * speed * speedMult;
+        }
+        else
+        {
+            movement = new Vector3(moveDirection, 0f, 0f) * speed;
+        }
+
         rb.linearVelocity = new Vector3(movement.x, rb.linearVelocity.y, rb.linearVelocity.z);
     }
 
@@ -191,6 +214,11 @@ public class PlayerController : MonoBehaviourPun
         photonView.RPC(nameof(DeactiveShield), RpcTarget.All);
     }
 
+    public void AddSpeedBost(float speedDuration)
+    {
+        speedBostDuration = speedDuration;
+        haveSpeedBost = true;
+    }
 
     private void OnDrawGizmosSelected()
     {

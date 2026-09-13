@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 2856534858627804288}
   - component: {fileID: 4004278552096441790}
   - component: {fileID: 8059858501779678933}
-  - component: {fileID: 2494359278871350342}
+  - component: {fileID: 7030012703109577004}
   m_Layer: 0
-  m_Name: ShieldPower
+  m_Name: SpeedPower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -69,7 +69,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 23dd1235b788364488af78b2ed15683c, type: 2}
+  - {fileID: 2100000, guid: 05a51bc28056f5d49b73b9ce0d3b3f76, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -136,7 +136,7 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &2494359278871350342
+--- !u!114 &7030012703109577004
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -145,10 +145,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7364240908176328357}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 572748936caf8614381a2572bed0d702, type: 3}
+  m_Script: {fileID: 11500000, guid: 6a8b6bb78157645498482a1213bbfcbf, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ShieldPower
-  shieldDuration: 5
+  m_EditorClassIdentifier: Assembly-CSharp::SpeedPower
+  speedBostTime: 1
+  speedBostDuration: 5
   playerDetectionLayer:
     serializedVersion: 2
     m_Bits: 128
