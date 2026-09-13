@@ -79,6 +79,7 @@ public class GameManager : MonoBehaviourPun
             if (currentWinner != i && playersInMatch[currentWinner].points < playersInMatch[i].points)
             {
                 currentWinner = i;
+                Debug.Log(currentWinner);
             }
         }
         mainCamera.transform.position = playersInMatch[currentWinner].cameraWinTransform.position;
