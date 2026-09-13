@@ -131,7 +131,6 @@ public class PlayerController : MonoBehaviourPun
         {
             Jump();
         }
-
     }
 
     public void Move()
@@ -166,11 +165,6 @@ public class PlayerController : MonoBehaviourPun
     {
         rtPoints += Time.deltaTime;
         points = Convert.ToInt32(rtPoints);
-
-        if(points >= gm.WinningPoints)
-        {
-            gm.WinCondition(points, this);
-        }
     }
 
     public void CallAddCrown()
@@ -183,12 +177,6 @@ public class PlayerController : MonoBehaviourPun
         photonView.RPC(nameof(QuitCrown), RpcTarget.All);
     }
 
-    private void OnDrawGizmosSelected()
-    {
-        if (checkFloor == null) return;
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(checkFloor.position, checkFloorDistance);
-    }
 
     public void AddShield()
     {
@@ -198,6 +186,12 @@ public class PlayerController : MonoBehaviourPun
     public void QuitShield()
     {
         photonView.RPC(nameof(DeactiveShield), RpcTarget.All);
+    }
+    private void OnDrawGizmosSelected()
+    {
+        if (checkFloor == null) return;
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(checkFloor.position, checkFloorDistance);
     }
 
     #region RPCMethods

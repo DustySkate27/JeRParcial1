@@ -19,13 +19,29 @@ public class GameManager : MonoBehaviourPun
     public List<Material> PlayerMaterials => playerMaterials;
 
     [Header("WinCondition")]
+    [SerializeField] private float matchDuration;
     [SerializeField] private int winningPoints;
     public int WinningPoints => winningPoints;
+    public float currentTime;
+    private bool matchStarted;
+
 
     [Header("Crown Related")]
     [SerializeField] private GameObject crownPrefab;
     [SerializeField] private GameObject crownSpawners;
     private CrownController crownController;
+
+
+    private void Update()
+    {
+        if (!PhotonNetwork.IsMasterClient) return;
+
+        if (matchStarted)
+        {
+            currentTime += Time.deltaTime;
+            EndCondition();
+        }
+    }
 
     public void GameStart()
     {
@@ -41,18 +57,18 @@ public class GameManager : MonoBehaviourPun
         player.InitializeGame(phMan, this, ID);
     }
 
-    public void WinCondition(int points, PlayerController player)
+    public void EndCondition()
     {
-        if (points >= winningPoints)
+        if (currentTime >= matchDuration)
         {
-            photonView.RPC(nameof(WinGame), RpcTarget.All, player);
+            photonView.RPC(nameof(EndGame), RpcTarget.All);
         }
     }
 
     #region RPCMethods
 
     [PunRPC]
-    public void WinGame(PlayerController player)
+    public void EndGame(PlayerController player)
     {
         Debug.Log(player.name + " Wins");
     }

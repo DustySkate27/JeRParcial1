@@ -2,41 +2,19 @@ using Photon.Pun;
 using Photon.Realtime;
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameplayPhotonManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] private GameManager gm;
     [SerializeField] private string roomName;
 
-    private Action onRoom;
-    private bool isMaster;
-
     public int PlayerCount => AmountOfPlayers();
 
     private void Start()
     {
         gm.phMan = this;
-
-        onRoom += InitializeMatch;
-
-        PhotonNetwork.ConnectUsingSettings();
-    }
-
-    public override void OnConnectedToMaster()
-    {
-        Debug.Log("Connected to server");
-        PhotonNetwork.JoinLobby();
-    }
-
-    public override void OnJoinedLobby()
-    {
-        Debug.Log("Connected to lobby");
-        PhotonNetwork.JoinRandomOrCreateRoom(roomName: roomName);
-    }
-
-    public override void OnJoinedRoom()
-    {
-        onRoom?.Invoke();
+        InitializeMatch();
     }
 
     private void InitializeMatch()
@@ -44,21 +22,27 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
         string roomName = PhotonNetwork.CurrentRoom.Name;
         int playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
 
-        isMaster = PhotonNetwork.IsMasterClient;
-
-        if (isMaster)
+        if (playerCount < PhotonNetwork.CurrentRoom.MaxPlayers)
         {
-            gm.GameStart();
-        }
-
-        if (playerCount < 4)
-        {
-            gm.SpawnPlayer(playerCount);
+            if (PhotonNetwork.IsMasterClient)
+            {
+                gm.SpawnPlayer(0);
+            }
+            else
+            {
+                gm.SpawnPlayer(GetPlayerID());
+            }
         }
         else
         {
-            Application.Quit();
+            PhotonNetwork.Disconnect();
+            SceneManager.LoadScene("MainMenuScene");
         }
+    }
+
+    private int GetPlayerID()
+    {
+        return PhotonNetwork.LocalPlayer.ActorNumber - 1;
     }
 
     public void SpawnObject(string name, Vector3 position, Quaternion rotation)
@@ -90,4 +74,6 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
     {
         return PhotonNetwork.CurrentRoom.PlayerCount;
     }
+
+    public override 
 }

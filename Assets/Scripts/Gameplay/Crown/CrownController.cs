@@ -17,7 +17,7 @@ public class CrownController : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
-        if (!canPickDroppedCrown)
+        if (!canPickDroppedCrown && !isCrownTaken)
         {
             currentTime += Time.deltaTime;
 
@@ -39,24 +39,27 @@ public class CrownController : MonoBehaviourPun
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!canPickDroppedCrown) return;
-
         Debug.Log("colisione con algo");
 
         // Comprobación correcta con bitmask
         if ((playerDetectionLayer.value & (1 << other.gameObject.layer)) != 0)
         {
+            if (isCrownTaken) return;
+            if (!canPickDroppedCrown) return;
+
             Debug.Log("El player me toco");
             canPickDroppedCrown = false;
+            isCrownTaken = true;
             currentPlayer = other.gameObject.GetComponent<PlayerController>();
             currentPlayer.CallAddCrown();
         }
 
-        if ((bulletDetectionLayer.value & (1<<other.gameObject.layer)) != 0)
+        if (currentPlayer != null && (bulletDetectionLayer.value & (1<<other.gameObject.layer)) != 0)
         {
-            if (currentPlayer != null && currentPlayer.haveShield) return;
+            if (currentPlayer.haveShield) return;
 
             canPickDroppedCrown = false;
+            isCrownTaken = false;
             currentPlayer.CallQuitCrown();
         }
     }

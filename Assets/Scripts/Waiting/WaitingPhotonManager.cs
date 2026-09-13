@@ -2,6 +2,7 @@ using UnityEngine;
 using Photon.Pun;
 using System.Collections.Generic;
 using Photon.Realtime;
+using UnityEngine.SceneManagement;
 
 public class WaitingPhotonManager : MonoBehaviourPunCallbacks
 {
@@ -34,7 +35,8 @@ public class WaitingPhotonManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            Application.Quit();
+            PhotonNetwork.Disconnect();
+            SceneManager.LoadScene("MainMenuScene");
         }
     }
 
