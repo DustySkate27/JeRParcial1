@@ -9,7 +9,15 @@ public class ShieldPower : MonoBehaviour
 
     [SerializeField] private LayerMask playerDetectionLayer;
 
-    private void Update
+    private void Update()
+    {
+        currentTime += Time.deltaTime;
+
+        if (currentTime > shieldDuration)
+        {
+            DestroyShield();
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {

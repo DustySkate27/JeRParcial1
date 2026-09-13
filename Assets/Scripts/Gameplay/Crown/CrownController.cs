@@ -5,7 +5,7 @@ public class CrownController : MonoBehaviourPun
 {
     [Header("Crown configuration")]
     [SerializeField] private float afterDropCD;
-    private float currentTime;
+    private float currentTime = 0;
     private bool canPickDroppedCrown = true;
     private bool isCrownTaken = false;
 
@@ -24,6 +24,7 @@ public class CrownController : MonoBehaviourPun
             if (currentTime >= afterDropCD)
             {
                 canPickDroppedCrown = true;
+                currentTime = 0;
             }
         }
     }
@@ -53,6 +54,8 @@ public class CrownController : MonoBehaviourPun
 
         if ((bulletDetectionLayer.value & (1<<other.gameObject.layer)) != 0)
         {
+            if (currentPlayer != null && currentPlayer.haveShield) return;
+
             canPickDroppedCrown = false;
             currentPlayer.CallQuitCrown();
         }

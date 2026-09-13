@@ -1,6 +1,7 @@
 using Photon.Pun;
 using Photon.Realtime;
 using System;
+using Unity.Multiplayer.PlayMode;
 using UnityEngine;
 using UnityEngine.Rendering.UI;
 using UnityEngine.SceneManagement;
@@ -16,6 +17,8 @@ public class PlayerController : MonoBehaviourPun
     private float rtPoints;
     private int points;
     private int ID;
+
+    [SerializeField] private LayerMask bulletDetectionLayer;
 
     [Header("Movement configuration")]
     [SerializeField] private float speed;
@@ -229,4 +232,16 @@ public class PlayerController : MonoBehaviourPun
         photonView.RPC(nameof(gm.PlayerQuitParty), RpcTarget.All);
     }
     #endregion
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if ((bulletDetectionLayer.value & (1 << other.gameObject.layer)) != 0)
+        {
+            if (haveShield)
+            {
+                Debug.Log("Shield quitado por" + other.name);
+                QuitShield();
+            }
+        }
+    }
 }
