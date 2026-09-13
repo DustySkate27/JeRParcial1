@@ -172,7 +172,7 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
     private IEnumerator ErrorIncorrectPassword(GameObject screen)
     {
         screen.SetActive(false);
-        errorText.text = "Incorrect password.";
+        errorText.text = "Incorrect or not-required password.";
         errorCanvas.SetActive(true);
 
         yield return new WaitForSeconds(2f);
@@ -199,12 +199,25 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
         {
             PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("password", out object storedPwd);
 
-            if (string.IsNullOrEmpty((string)storedPwd) || insertedPassword == (string)storedPwd)
+            if (string.IsNullOrEmpty((string)storedPwd))
             {
-                Debug.Log("era sala publica o contraseña correcta");
+                if(insertedPassword != null)
+                {
+                    StartCoroutine(ErrorIncorrectPassword(loadingCanvas));
+                }
+                else
+                {
+                    Debug.Log("Entré a pública");
+                    PhotonNetwork.LoadLevel("WaitingScene");
+                }
+
+            }
+            else if(insertedPassword == (string)storedPwd)
+            {
+                Debug.Log("Entré a privada");
                 PhotonNetwork.LoadLevel("WaitingScene");
             }
-            else if(insertedPassword == null || insertedPassword != (string)storedPwd)
+            else if (insertedPassword == null || insertedPassword != (string)storedPwd)
             {
                 PhotonNetwork.LeaveRoom();
                 StartCoroutine(ErrorIncorrectPassword(loadingCanvas));
