@@ -64,8 +64,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         this.wm = wm;
         this.ID = ID;
         gameScene = false;
-
-        photonView.RPC(nameof(ColorForPlayer), RpcTarget.All);
     }
 
     public void InitializeGame(GameplayPhotonManager ph, GameManager gm, int ID)
@@ -78,7 +76,10 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         this.gm = gm;
         this.ID = ID;
         gameScene = true;
+    }
 
+    private void Start()
+    {
         photonView.RPC(nameof(ColorForPlayer), RpcTarget.All);
     }
 
@@ -243,7 +244,10 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [PunRPC]
     private void ColorForPlayer()
     {
-        render.material = gm.PlayerMaterials[ID];
+        if(gameScene)
+            render.material = gm.PlayerMaterials[ID];
+        else
+            render.material = wm.PlayerMaterials[ID];
     }
 
     [PunRPC]
