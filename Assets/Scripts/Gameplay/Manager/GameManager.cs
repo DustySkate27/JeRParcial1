@@ -183,24 +183,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         winner.speed = 0;
         mainCamera.transform.position = position;
 
-        string winnerColor = null;
-        switch (winner.ID)
-        {
-            case 0:
-                winnerColor = "blue";
-                break;
-            case 1:
-                winnerColor = "green";
-                break;
-            case 2:
-                winnerColor = "red";
-                break;
-            case 3:
-                winnerColor = "yellow";
-                break;
-        }
-
-        winText.text = $"Lil {winnerColor} bro wins";
+        winText.text = "Lil bro wins";
     }
 
     [PunRPC]
