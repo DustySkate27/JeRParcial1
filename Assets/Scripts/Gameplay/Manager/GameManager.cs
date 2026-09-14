@@ -16,8 +16,6 @@ public class GameManager : MonoBehaviourPun, IPunObservable
     [Header("Player Related")]
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private List<GameObject> playerSpawners;
-    [SerializeField] private List<Material> playerMaterials;
-    public List<Material> PlayerMaterials => playerMaterials;
 
     [Header("WinCondition")]
     [SerializeField] private float matchDuration;

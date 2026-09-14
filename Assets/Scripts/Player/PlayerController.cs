@@ -2,6 +2,7 @@ using ExitGames.Client.Photon.StructWrapping;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
+using System.Collections.Generic;
 using TMPro;
 using Unity.Multiplayer.PlayMode;
 using UnityEngine;
@@ -46,6 +47,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [Header("Render")]
     [SerializeField] private Renderer render;
     [SerializeField] private GameObject playerModel;
+    [SerializeField] private List<GameObject> playerMaterials;
 
     [Header("Laser")]
     [SerializeField] private GameObject laser;
@@ -285,12 +287,12 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     #region RPCMethods
     [PunRPC]
-    private void ColorForPlayer()
+    private void ColorForPlayer(int id)
     {
-        if(gameScene)
-            render.material = gm.PlayerMaterials[ID];
+        if (gameScene)
+            playerMaterials[id].SetActive(true);
         else
-            render.material = wm.PlayerMaterials[ID];
+            playerMaterials[id].SetActive(true);
     }
 
     [PunRPC]

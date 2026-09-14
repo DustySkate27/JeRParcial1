@@ -15,8 +15,6 @@ public class WaitManager : MonoBehaviourPun
     [Header("Player Related")]
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private List<GameObject> playerSpawners;
-    [SerializeField] private List<Material> playerMaterials;
-    public List<Material> PlayerMaterials => playerMaterials;
 
     public bool transitionReady = false;
 

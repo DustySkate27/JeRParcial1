@@ -27,7 +27,7 @@ public class WaitingPhotonManager : MonoBehaviourPunCallbacks
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                wm.SpawnPlayer(0);
+                wm.SpawnPlayer(GetPlayerID());
                 PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { { "matchStarted", false } });
             }
             else
