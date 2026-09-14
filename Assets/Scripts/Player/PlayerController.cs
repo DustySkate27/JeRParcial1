@@ -1,3 +1,4 @@
+using ExitGames.Client.Photon.StructWrapping;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
@@ -21,6 +22,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     [Header("Powers")]
     [SerializeField] private GameObject shieldPrefab;
+    [SerializeField] private GameObject speedPrefab;
     public bool haveShield = false;
     public bool haveSpeedBost = false;
     private float speedBostDuration;
@@ -135,14 +137,23 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         {
             playerModel.transform.rotation = Quaternion.Euler(0f, 0f, 0f); // mirando a la derecha
             isFacingRight = true;
+            if (haveSpeedBost)
+            {
+                speedPrefab.SetActive(true);
+            }
         }
         else if (moveDirection < 0f && isFacingRight)
         {
             playerModel.transform.rotation = Quaternion.Euler(0f, 180f, 0f); // mirando a la izquierda
             isFacingRight = false;
+            speedPrefab.SetActive(true);
+        }
+        else if(moveDirection == 0f)
+        {
+            speedPrefab.SetActive(false);
         }
 
-        canJump = Physics.CheckSphere(checkFloor.position, checkFloorDistance, floorLayer);
+            canJump = Physics.CheckSphere(checkFloor.position, checkFloorDistance, floorLayer);
     }
 
     private void FixedUpdate()
@@ -236,13 +247,27 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         {
             stream.SendNext(points);
             stream.SendNext(isFacingRight);
+            stream.SendNext(haveSpeedBost);
+            stream.SendNext(moveDirection);
         }
         else
         {
             points = (int)stream.ReceiveNext();
             pointsUI.text = points.ToString();
 
-            bool facingRight = (bool)stream.ReceiveNext();
+            haveSpeedBost = (bool)stream.ReceiveNext();
+            moveDirection = (float)stream.ReceiveNext();
+
+            if (haveSpeedBost && moveDirection != 0f)
+            {
+                speedPrefab.SetActive(true);
+            }
+            else
+            {
+                speedPrefab.SetActive(false);
+            }
+
+                bool facingRight = (bool)stream.ReceiveNext();
             if (facingRight != isFacingRight)
             {
                 isFacingRight = facingRight;
