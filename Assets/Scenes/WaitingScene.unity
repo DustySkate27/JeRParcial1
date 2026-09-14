@@ -347,8 +347,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Waiting for players...
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 7cae26ad13f89fc46a0e1155e0d414e3, type: 2}
+  m_sharedMaterial: {fileID: -3916250555679530190, guid: 7cae26ad13f89fc46a0e1155e0d414e3, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -372,7 +372,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 28.8
+  m_fontSize: 20.35
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -445,7 +445,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  - {fileID: -3916250555679530190, guid: 7cae26ad13f89fc46a0e1155e0d414e3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1063,7 +1063,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: Host must press "S" to start the match.
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 7cae26ad13f89fc46a0e1155e0d414e3, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -1133,7 +1133,7 @@ MonoBehaviour:
   _SortingLayer: 0
   _SortingLayerID: 0
   _SortingOrder: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_renderer: {fileID: 1185543302}
   m_maskType: 0
 --- !u!23 &1185543302
@@ -1412,6 +1412,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 9a766396accb9284e88f87f7da17feee, type: 2}
   - {fileID: 2100000, guid: 0464ab36257f0394f87bc1af83a68ce7, type: 2}
   - {fileID: 2100000, guid: c282e811e1fa26a45bd7ae3bb496f44f, type: 2}
+  transitionReady: 0
 --- !u!4 &1443193065
 Transform:
   m_ObjectHideFlags: 0
