@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private bool gameScene = false;
 
     private float rtPoints;
-    public int points;
+    public int points = 0;
     public int ID;
 
     public bool haveShield = false;
@@ -69,6 +69,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         this.wm = wm;
         this.ID = ID;
         gameScene = false;
+
+        pointsUI.text = points.ToString();
     }
 
     public void InitializeGame(GameplayPhotonManager ph, GameManager gm, int ID)
