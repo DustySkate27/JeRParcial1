@@ -29,6 +29,7 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
                 gm.SpawnPlayer(0);
                 gm.StartMatch();
                 gm.currentTime = 0;
+                PhotonNetwork.CurrentRoom.CustomProperties["matchStarted"] = true;
             }
             else
             {

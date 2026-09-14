@@ -166,6 +166,22 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
     }
 
     /// <summary>
+    /// Error used in case a room doesn't exist or it's full. Screen refers to the current canvas.
+    /// </summary>
+    /// <param name="screen"></param>
+    private IEnumerator ErrorMatchStarted(GameObject screen)
+    {
+        screen.SetActive(false);
+        errorText.text = "The match has already started. Try later";
+        errorCanvas.SetActive(true);
+
+        yield return new WaitForSeconds(2f);
+
+        errorCanvas.SetActive(false);
+        mainCanvas.SetActive(true);
+    }
+
+    /// <summary>
     /// Error used in case the password is incorrect. Screen refers to the current canvas.
     /// </summary>
     /// <param name="screen"></param>
@@ -197,6 +213,13 @@ public class MainMenuPhotonManager : MonoBehaviourPunCallbacks
 
         if (!PhotonNetwork.IsMasterClient) 
         {
+            if(PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("matchStarted", out object check) && (bool)check)
+            {
+                PhotonNetwork.LeaveRoom();
+                StartCoroutine(ErrorMatchStarted(loadingCanvas));
+                return;
+            }
+
             PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("password", out object storedPwd);
 
             if (string.IsNullOrEmpty((string)storedPwd))

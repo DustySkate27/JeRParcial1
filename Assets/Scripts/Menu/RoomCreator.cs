@@ -24,7 +24,8 @@ public class RoomCreator : MonoBehaviourPun
         customProps = new Hashtable
         {
             { "isPrivate", hasPassword },
-            { "password", roomPassword.text }
+            { "password", roomPassword.text },
+            { "matchStarted", false }
         };
 
         RoomOptions options = new RoomOptions
