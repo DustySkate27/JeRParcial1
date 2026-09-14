@@ -290,6 +290,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [PunRPC]
     private void ColorForPlayer(int id)
     {
+        if (!photonView.IsMine) return;
+
         if (gameScene)
             playerMaterials[id].SetActive(true);
         else
