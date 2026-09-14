@@ -32,7 +32,21 @@ public class GameManager : MonoBehaviourPun, IPunObservable
     [SerializeField] private GameObject crownSpawner;
     public CrownController crownController;
 
+    [Header("Powers")]
+    [SerializeField] private GameObject speedPrefab;
+    [SerializeField] private GameObject shieldPrefab;
+    [SerializeField] private GameObject shieldSpawner;
+    [SerializeField] private GameObject speedSpawner;
+    private float spawnCooldown = 15f;
+    private float timeToSpawnPowers = 0;
+
     public Dictionary<int, PlayerController> playersInMatch = new Dictionary<int, PlayerController>();
+
+    private void Start()
+    {
+        SpawnPowers();
+        timeToSpawnPowers = 0;
+    }
 
     private void Update()
     {
@@ -43,6 +57,17 @@ public class GameManager : MonoBehaviourPun, IPunObservable
             currentTime += Time.deltaTime;
             EndCondition();
         }
+
+        if(timeToSpawnPowers < spawnCooldown)
+        {
+            timeToSpawnPowers += Time.deltaTime;
+        }
+        else
+        {
+            SpawnPowers();
+            timeToSpawnPowers = 0;
+        }
+
     }
 
     public void StartMatch()
@@ -64,6 +89,12 @@ public class GameManager : MonoBehaviourPun, IPunObservable
     {
         Time.timeScale = 1;
         switchingMasterCanvas.SetActive(false);
+    }
+
+    private void SpawnPowers()
+    {
+        phMan.ReturnSpawnedRoomObject(speedPrefab.name, speedSpawner.transform.position, Quaternion.identity);
+        phMan.ReturnSpawnedRoomObject(shieldPrefab.name, shieldSpawner.transform.position, Quaternion.identity);
     }
 
     public void SpawnPlayer(int ID)
@@ -89,11 +120,13 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         {
             stream.SendNext(currentTime);
             stream.SendNext(matchStarted);
+            stream.SendNext(timeToSpawnPowers);
         }
         else
         {
             currentTime = (float)stream.ReceiveNext();
             matchStarted = (bool)stream.ReceiveNext();
+            timeToSpawnPowers = (float)stream.ReceiveNext();
         }
     }
 
