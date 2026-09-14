@@ -56,6 +56,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     public void InitializeWait(WaitingPhotonManager ph, WaitManager wm, int ID)
     {
+        if (!photonView.IsMine) return;
+
         rb = gameObject.GetComponent<Rigidbody>();
 
         phWait = ph;
@@ -68,6 +70,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     public void InitializeGame(GameplayPhotonManager ph, GameManager gm, int ID)
     {
+        if (!photonView.IsMine) return;
+
         rb = gameObject.GetComponent<Rigidbody>();
 
         phMan = ph;
