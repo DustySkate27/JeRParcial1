@@ -83,8 +83,6 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
     {
         base.OnPlayerLeftRoom(otherPlayer);
 
-        if (!photonView.IsMine) return;
-
         if (otherPlayer == PhotonNetwork.MasterClient || PhotonNetwork.MasterClient == null)
         {
             gm.photonView.RPC(nameof(gm.PauseGameRPC), RpcTarget.All);
