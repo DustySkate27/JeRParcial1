@@ -232,12 +232,26 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         if (stream.IsWriting)
         {
             stream.SendNext(points);
-            stream.SendNext(pointsUI.text);
+            stream.SendNext(isFacingRight);
         }
         else
         {
             points = (int)stream.ReceiveNext();
-            pointsUI.text = (string)stream.ReceiveNext();
+            pointsUI.text = points.ToString();
+
+            bool facingRight = (bool)stream.ReceiveNext();
+            if (facingRight != isFacingRight)
+            {
+                isFacingRight = facingRight;
+                if(isFacingRight)
+                {
+                    playerModel.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+                }
+                else
+                {
+                    playerModel.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+                }
+            }
         }
     }
 
