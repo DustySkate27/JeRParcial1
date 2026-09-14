@@ -232,10 +232,12 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         if (stream.IsWriting)
         {
             stream.SendNext(points);
+            stream.SendNext(pointsUI.text);
         }
         else
         {
             points = (int)stream.ReceiveNext();
+            pointsUI.text = (string)stream.ReceiveNext();
         }
     }
 
