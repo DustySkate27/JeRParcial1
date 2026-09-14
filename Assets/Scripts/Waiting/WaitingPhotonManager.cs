@@ -40,8 +40,6 @@ public class WaitingPhotonManager : MonoBehaviourPunCallbacks
             PhotonNetwork.Disconnect();
             SceneManager.LoadScene("MainMenuScene");
         }
-
-        Debug.Log(PhotonNetwork.MasterClient.ActorNumber);
         wm.PlayerEnteredParty();
 
     }
