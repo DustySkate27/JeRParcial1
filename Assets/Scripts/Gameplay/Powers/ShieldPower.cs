@@ -2,7 +2,7 @@ using Photon.Pun;
 using Unity.Multiplayer.PlayMode;
 using UnityEngine;
 
-public class ShieldPower : MonoBehaviour
+public class ShieldPower : MonoBehaviourPun
 {
     [SerializeField] private float shieldDuration = 5f;
     private float currentTime = 0;
@@ -12,6 +12,7 @@ public class ShieldPower : MonoBehaviour
 
     private void Update()
     {
+        if (!photonView.IsMine) return;
         currentTime += Time.deltaTime;
 
         if (currentTime > shieldDuration)
@@ -22,6 +23,7 @@ public class ShieldPower : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (!photonView.IsMine) return;
         if ((playerDetectionLayer.value & (1 << other.gameObject.layer)) != 0)
         {
             Debug.Log("Shield adquierido por" + other.name);

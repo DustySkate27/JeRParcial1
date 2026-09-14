@@ -1,7 +1,7 @@
 using Photon.Pun;
 using UnityEngine;
 
-public class SpeedPower : MonoBehaviour
+public class SpeedPower : MonoBehaviourPun
 {
     [SerializeField] private float speedBostTime = 1f;
     [SerializeField] private float speedBostDuration = 5f;
@@ -12,6 +12,7 @@ public class SpeedPower : MonoBehaviour
 
     private void Update()
     {
+        if (!photonView.IsMine) return;
         currentTime += Time.deltaTime;
 
         if (currentTime > speedBostDuration)
@@ -22,6 +23,7 @@ public class SpeedPower : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (!photonView.IsMine) return;
         if ((playerDetectionLayer.value & (1 << other.gameObject.layer)) != 0)
         {
             Debug.Log("SpeedBost adquierido por" + other.name);
