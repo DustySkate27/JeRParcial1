@@ -6,6 +6,7 @@ public class ShieldPower : MonoBehaviour
 {
     [SerializeField] private float shieldDuration = 5f;
     private float currentTime = 0;
+    private bool isDestroyed = false;
 
     [SerializeField] private LayerMask playerDetectionLayer;
 
@@ -33,6 +34,8 @@ public class ShieldPower : MonoBehaviour
 
     private void DestroyShield()
     {
+        if (isDestroyed) return;
+        isDestroyed = true;
         PhotonNetwork.Destroy(gameObject);
     }
 

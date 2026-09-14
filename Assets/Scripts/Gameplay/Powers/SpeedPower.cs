@@ -6,6 +6,7 @@ public class SpeedPower : MonoBehaviour
     [SerializeField] private float speedBostTime = 1f;
     [SerializeField] private float speedBostDuration = 5f;
     private float currentTime = 0;
+    private bool isDestroyed = false;
 
     [SerializeField] private LayerMask playerDetectionLayer;
 
@@ -15,7 +16,7 @@ public class SpeedPower : MonoBehaviour
 
         if (currentTime > speedBostDuration)
         {
-            DestroyShield();
+            DestroySpeed();
         }
     }
 
@@ -28,11 +29,13 @@ public class SpeedPower : MonoBehaviour
             player.AddSpeedBost(speedBostTime);
         }
 
-        DestroyShield();
+        DestroySpeed();
     }
 
-    private void DestroyShield()
+    private void DestroySpeed()
     {
+        if (isDestroyed) return;
+        isDestroyed = true;
         PhotonNetwork.Destroy(gameObject);
     }
 }
