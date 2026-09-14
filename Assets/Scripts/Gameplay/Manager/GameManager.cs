@@ -75,7 +75,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         var crown = phMan.ReturnSpawnedRoomObject(crownPrefab.name, crownSpawner.transform.position, Quaternion.identity);
         int crownViewID = crown.GetComponent<PhotonView>().ViewID;
 
-        photonView.RPC(nameof(RegisterCrown), RpcTarget.AllBuffered, crownViewID);
+        photonView.RPC(nameof(RegisterCrown), RpcTarget.All, crownViewID);
         matchStarted = true;
     }
 
@@ -103,11 +103,6 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         PlayerController player = currentPlayer.GetComponent<PlayerController>();
         player.InitializeGame(phMan, this, ID);
         photonView.RPC(nameof(RegisterPlayer), RpcTarget.All, ID, player.photonView.ViewID);
-
-        if(crownController != null)
-        {
-            photonView.RPC(nameof(crownController.CrownPicked), RpcTarget.All, crownController.currentPlayer.photonView.ViewID);
-        }
     }
 
     public void EndCondition()
