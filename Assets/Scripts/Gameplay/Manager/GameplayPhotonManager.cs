@@ -53,7 +53,7 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
             if (players[i] == PhotonNetwork.LocalPlayer)
                 return i;
         }
-        return 0; // fallback, no debería pasar
+        return 0; 
     }
 
     public void SpawnObject(string name, Vector3 position, Quaternion rotation)

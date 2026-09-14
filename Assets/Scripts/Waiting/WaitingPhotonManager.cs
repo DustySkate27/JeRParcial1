@@ -54,7 +54,7 @@ public class WaitingPhotonManager : MonoBehaviourPunCallbacks
             if (players[i] == PhotonNetwork.LocalPlayer)
                 return i;
         }
-        return 0; // fallback, no debería pasar
+        return 0; 
     }
 
     public void GameStartConfirmed()
