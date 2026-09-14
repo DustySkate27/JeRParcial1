@@ -48,7 +48,13 @@ public class WaitingPhotonManager : MonoBehaviourPunCallbacks
 
     private int GetPlayerID()
     {
-        return PhotonNetwork.LocalPlayer.ActorNumber - 1;
+        Player[] players = PhotonNetwork.PlayerList;
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (players[i] == PhotonNetwork.LocalPlayer)
+                return i;
+        }
+        return 0; // fallback, no debería pasar
     }
 
     public void GameStartConfirmed()
