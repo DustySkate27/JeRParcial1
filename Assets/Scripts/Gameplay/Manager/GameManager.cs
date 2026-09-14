@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
     [Header("Canvas")]
     [SerializeField] public GameObject switchingMasterCanvas;
-    [SerializeField] private TextMeshProUGUI winText;
+    [SerializeField] private TextMeshPro winText;
 
     [Header("Crown Related")]
     [SerializeField] private GameObject crownPrefab;

@@ -708,10 +708,10 @@ MonoBehaviour:
   - {fileID: 1230469432}
   - {fileID: 1071495960}
   - {fileID: 1566796623}
-  matchDuration: 60
+  matchDuration: 10
   currentTime: 0
   switchingMasterCanvas: {fileID: 1404947976}
-  winText: {fileID: 0}
+  winText: {fileID: 2134562203}
   crownPrefab: {fileID: 2929724351776186149, guid: ab8e9654373f5494189d348920916b20, type: 3}
   crownSpawner: {fileID: 2038831133}
   crownController: {fileID: 0}
