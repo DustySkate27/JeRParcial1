@@ -22,7 +22,7 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
         string roomName = PhotonNetwork.CurrentRoom.Name;
         int playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
 
-        if (playerCount < PhotonNetwork.CurrentRoom.MaxPlayers)
+        if (playerCount <= PhotonNetwork.CurrentRoom.MaxPlayers)
         {
             if (PhotonNetwork.IsMasterClient)
             {
