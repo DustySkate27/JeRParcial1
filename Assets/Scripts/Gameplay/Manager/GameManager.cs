@@ -5,7 +5,7 @@ using System.Globalization;
 using TMPro;
 using UnityEngine;
 
-public class GameManager : MonoBehaviourPun
+public class GameManager : MonoBehaviourPun, IPunObservable
 {
     public GameplayPhotonManager phMan;
 
@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviourPun
     public float currentTime;
     private bool matchStarted;
 
+    [Header("Canvas")]
+    [SerializeField] public GameObject switchingMasterCanvas;
 
     [Header("Crown Related")]
     [SerializeField] private GameObject crownPrefab;
@@ -52,6 +54,18 @@ public class GameManager : MonoBehaviourPun
         matchStarted = true;
     }
 
+    private void PauseGame()
+    {
+        Time.timeScale = 0;
+        switchingMasterCanvas.SetActive(true);
+    }
+
+    private void UnpauseGame()
+    {
+        Time.timeScale = 1;
+        switchingMasterCanvas.SetActive(false);
+    }
+
     public void SpawnPlayer(int ID)
     {
         GameObject currentPlayer = phMan.ReturnSpawnedObject(playerPrefab.name, playerSpawners[ID].transform.position, Quaternion.identity);
@@ -66,6 +80,20 @@ public class GameManager : MonoBehaviourPun
         {
             photonView.RPC(nameof(EndGame), RpcTarget.All);
             StartCoroutine(ReturningToWaitingScene());
+        }
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(currentTime);
+            stream.SendNext(matchStarted);
+        }
+        else
+        {
+            currentTime = (float)stream.ReceiveNext();
+            matchStarted = (bool)stream.ReceiveNext();
         }
     }
 
@@ -124,9 +152,15 @@ public class GameManager : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void CancelGame()
+    public void PauseGameRPC()
     {
-        Debug.Log(" Canceled game. Disconneting...");
+        PauseGame();
+    }
+
+    [PunRPC]
+    public void UnpauseGameRPC()
+    {
+        UnpauseGame();
     }
     #endregion
 

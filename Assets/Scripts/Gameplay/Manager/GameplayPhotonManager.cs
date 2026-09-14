@@ -40,8 +40,6 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
             PhotonNetwork.Disconnect();
             SceneManager.LoadScene("MainMenuScene");
         }
-
-        
     }
 
     private int GetPlayerID()
@@ -83,6 +81,13 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
     {
         base.OnPlayerLeftRoom(otherPlayer);
 
+        if (!photonView.IsMine) return;
+
+        if (otherPlayer == PhotonNetwork.MasterClient || PhotonNetwork.MasterClient == null)
+        {
+            gm.photonView.RPC(nameof(gm.PauseGameRPC), RpcTarget.All);
+        }
+
         int leftID = otherPlayer.ActorNumber - 1;
 
         if (PhotonNetwork.IsMasterClient)
@@ -103,6 +108,13 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
         {
             gm.StartMatch();
         }
+    }
+
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        base.OnMasterClientSwitched(newMasterClient);
+
+        gm.photonView.RPC(nameof(gm.UnpauseGameRPC), RpcTarget.All);
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)

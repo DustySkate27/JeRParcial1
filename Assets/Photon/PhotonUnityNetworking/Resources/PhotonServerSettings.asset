@@ -55,6 +55,8 @@ MonoBehaviour:
   - CrownPicked
   - ActiveSpeed
   - SpeedPrefab
+  - PauseGameRPC
+  - UnpauseGameRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 0
