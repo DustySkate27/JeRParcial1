@@ -719,10 +719,10 @@ MonoBehaviour:
   crownPrefab: {fileID: 2929724351776186149, guid: ab8e9654373f5494189d348920916b20, type: 3}
   crownSpawner: {fileID: 2038831133}
   crownController: {fileID: 0}
-  speedPrefab: {fileID: 0}
-  shieldPrefab: {fileID: 0}
-  shieldSpawner: {fileID: 0}
-  speedSpawner: {fileID: 0}
+  speedPrefab: {fileID: 7364240908176328357, guid: 5a8599ac912f4bf4d875913f0f3a6131, type: 3}
+  shieldPrefab: {fileID: 7364240908176328357, guid: 9a00e6fd824dd2d4cb73905639d6dc6a, type: 3}
+  shieldSpawner: {fileID: 988787070}
+  speedSpawner: {fileID: 1031480809}
 --- !u!4 &623485505
 Transform:
   m_ObjectHideFlags: 0
