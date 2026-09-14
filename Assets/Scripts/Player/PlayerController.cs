@@ -71,8 +71,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         this.wm = wm;
         this.ID = ID;
         gameScene = false;
-
-        pointsUI.text = points.ToString();
     }
 
     public void InitializeGame(GameplayPhotonManager ph, GameManager gm, int ID)
@@ -90,6 +88,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private void Start()
     {
         photonView.RPC(nameof(ColorForPlayer), RpcTarget.All);
+        pointsUI.text = points.ToString();
     }
 
     // Update is called once per frame
