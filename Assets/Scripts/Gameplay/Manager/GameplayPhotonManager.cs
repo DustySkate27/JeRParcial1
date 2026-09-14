@@ -121,6 +121,5 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
     {
         base.OnPlayerEnteredRoom(newPlayer); 
 
-        photonView.RPC(nameof(gm.crownController.CrownPicked), RpcTarget.All, gm.crownController.currentPlayer.photonView.ViewID);
     }
 }

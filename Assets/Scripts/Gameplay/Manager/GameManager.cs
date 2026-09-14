@@ -103,6 +103,11 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         PlayerController player = currentPlayer.GetComponent<PlayerController>();
         player.InitializeGame(phMan, this, ID);
         photonView.RPC(nameof(RegisterPlayer), RpcTarget.All, ID, player.photonView.ViewID);
+
+        if(crownController != null)
+        {
+            photonView.RPC(nameof(crownController.CrownPicked), RpcTarget.All, crownController.currentPlayer.photonView.ViewID);
+        }
     }
 
     public void EndCondition()
