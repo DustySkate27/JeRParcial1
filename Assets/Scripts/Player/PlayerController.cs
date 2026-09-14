@@ -54,7 +54,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [Header("Camera Winning Position")]
     [SerializeField] public Transform cameraWinTransform;
 
-
     public void InitializeWait(WaitingPhotonManager ph, WaitManager wm, int ID)
     {
         rb = gameObject.GetComponent<Rigidbody>();
@@ -64,7 +63,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         this.ID = ID;
         gameScene = false;
 
-        render.material = wm.PlayerMaterials[ID];
+        photonView.RPC(nameof(ColorForPlayer), RpcTarget.All, wm.PlayerMaterials[ID]);
     }
 
     public void InitializeGame(GameplayPhotonManager ph, GameManager gm, int ID)
@@ -76,7 +75,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         this.ID = ID;
         gameScene = true;
 
-        render.material = gm.PlayerMaterials[ID];
+        photonView.RPC(nameof(ColorForPlayer), RpcTarget.All, gm.PlayerMaterials[ID]);
     }
 
     // Update is called once per frame
@@ -237,6 +236,12 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     }
 
     #region RPCMethods
+    [PunRPC]
+    private void ColorForPlayer(Material mat)
+    {
+        render.material = mat;
+    }
+
     [PunRPC]
     private void AddCrown()
     {

@@ -31,6 +31,18 @@ public class ListOfRooms : MonoBehaviourPunCallbacks
                 continue;
             }
 
+            if(info.PlayerCount >= 4)
+            {
+                Debug.Log($"{info.Name} esta llena, no se muestra");
+
+                if (displayingRooms.TryGetValue(info.Name, out Room fullRoom))
+                {
+                    Destroy(fullRoom.gameObject);
+                    displayingRooms.Remove(info.Name);
+                }
+                continue;
+            }
+
             if (info.CustomProperties.TryGetValue("isPrivate", out object isPrivateObj) && (bool)isPrivateObj)
             {
                 Debug.Log($"{info.Name} es privada, no se muestra");

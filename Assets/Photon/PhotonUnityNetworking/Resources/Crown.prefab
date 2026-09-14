@@ -75,7 +75,7 @@ MonoBehaviour:
     m_Bits: 128
   bulletDetectionLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
 --- !u!114 &3723702347286187567
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94,7 +94,8 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: 1401724896104156489}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0

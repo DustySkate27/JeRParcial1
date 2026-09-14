@@ -1,7 +1,7 @@
 using Photon.Pun;
 using UnityEngine;
 
-public class CrownController : MonoBehaviourPun
+public class CrownController : MonoBehaviourPun, IPunObservable
 {
     [Header("Crown configuration")]
     [SerializeField] private float afterDropCD;
@@ -31,36 +31,68 @@ public class CrownController : MonoBehaviourPun
 
     private void FixedUpdate()
     {
-        if (isCrownTaken)
+        if (isCrownTaken && currentPlayer != null)
         {
             transform.position = currentPlayer.crownPosition.position;
         }
     }
 
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(isCrownTaken);
+            stream.SendNext(canPickDroppedCrown);
+        }
+        else
+        {
+            isCrownTaken = (bool)stream.ReceiveNext();
+            canPickDroppedCrown = (bool)stream.ReceiveNext();
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        // Comprobación correcta con bitmask
+        if (!photonView.IsMine) return;
+
         if ((playerDetectionLayer.value & (1 << other.gameObject.layer)) != 0)
         {
-            if (isCrownTaken) return;
-            if (!canPickDroppedCrown) return;
+            if (isCrownTaken || !canPickDroppedCrown) return;
 
-            Debug.Log("El player me toco");
-            canPickDroppedCrown = false;
+            photonView.RPC(nameof(CrownPicked), RpcTarget.All, other.gameObject.GetComponent<PhotonView>().ViewID);
             isCrownTaken = true;
-            currentPlayer = other.gameObject.GetComponent<PlayerController>();
-            currentPlayer.CallAddCrown();
+            canPickDroppedCrown = false;
         }
 
         if (currentPlayer != null && (bulletDetectionLayer.value & (1<<other.gameObject.layer)) != 0)
         {
             if (currentPlayer.haveShield) return;
 
+            if (!isCrownTaken) return;
+
+            photonView.RPC(nameof(CrownDropped), RpcTarget.All);
             canPickDroppedCrown = false;
             isCrownTaken = false;
-            currentPlayer.CallQuitCrown();
-            transform.position = currentPlayer.transform.position;
-            currentPlayer = null;
         }
+    }
+
+    [PunRPC]
+    public void CrownPicked(int playerViewID)
+    {
+        PhotonView pv = PhotonView.Find(playerViewID);
+        if (pv == null) return;
+
+        currentPlayer = pv.GetComponent<PlayerController>();
+        photonView.TransferOwnership(currentPlayer.photonView.Owner);
+        currentPlayer.CallAddCrown();
+    }
+
+    [PunRPC]
+    public void CrownDropped()
+    {
+        transform.position = currentPlayer.transform.position;
+        currentPlayer.CallQuitCrown();
+        photonView.TransferOwnership(PhotonNetwork.MasterClient);
+        currentPlayer = null;
     }
 }

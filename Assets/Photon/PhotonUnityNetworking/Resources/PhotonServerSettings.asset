@@ -49,6 +49,10 @@ MonoBehaviour:
   - EndGame
   - RegisterPlayer
   - UnregisterPlayer
+  - RegisterCrown
+  - ColorForPlayer
+  - CrownDropped
+  - CrownPicked
   DisableAutoOpenWizard: 1
-  ShowSettings: 1
+  ShowSettings: 0
   DevRegionSetOnce: 0
