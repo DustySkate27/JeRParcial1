@@ -75,6 +75,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         this.wm = wm;
         this.ID = ID;
         gameScene = false;
+        photonView.RPC(nameof(ColorForPlayer), RpcTarget.All, ID);
     }
 
     public void InitializeGame(GameplayPhotonManager ph, GameManager gm, int ID)
@@ -87,12 +88,13 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         this.gm = gm;
         this.ID = ID;
         gameScene = true;
+        photonView.RPC(nameof(ColorForPlayer), RpcTarget.All, ID);
     }
 
     private void Start()
     {
         if (!photonView.IsMine) return;
-        photonView.RPC(nameof(ColorForPlayer), RpcTarget.All, ID);
+        
         pointsUI.text = points.ToString();
     }
 
