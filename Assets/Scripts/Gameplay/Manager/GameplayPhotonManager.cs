@@ -2,6 +2,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using System;
 using System.Security.Cryptography;
+using ExitGames.Client.Photon;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -29,7 +30,7 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
                 gm.SpawnPlayer(0);
                 gm.StartMatch();
                 gm.currentTime = 0;
-                PhotonNetwork.CurrentRoom.CustomProperties["matchStarted"] = true;
+                PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { { "matchStarted", true } });
             }
             else
             {

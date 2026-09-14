@@ -1,6 +1,7 @@
 using UnityEngine;
 using Photon.Pun;
 using System.Collections.Generic;
+using ExitGames.Client.Photon;
 using Photon.Realtime;
 using UnityEngine.SceneManagement;
 
@@ -27,7 +28,7 @@ public class WaitingPhotonManager : MonoBehaviourPunCallbacks
             if (PhotonNetwork.IsMasterClient)
             {
                 wm.SpawnPlayer(0);
-                PhotonNetwork.CurrentRoom.CustomProperties["matchStarted"] = false;
+                PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { { "matchStarted", false } });
             }
             else
             {
