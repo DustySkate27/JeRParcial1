@@ -12,7 +12,7 @@ public class CrownController : MonoBehaviourPun, IPunObservable
     [SerializeField] private LayerMask playerDetectionLayer;
     [SerializeField] private LayerMask bulletDetectionLayer;
 
-    private PlayerController currentPlayer;
+    public PlayerController currentPlayer;
 
     // Update is called once per frame
     void Update()
