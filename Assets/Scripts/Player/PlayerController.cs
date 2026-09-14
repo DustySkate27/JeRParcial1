@@ -63,7 +63,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         this.ID = ID;
         gameScene = false;
 
-        photonView.RPC(nameof(ColorForPlayer), RpcTarget.All, wm.PlayerMaterials[ID]);
+        photonView.RPC(nameof(ColorForPlayer), RpcTarget.All);
     }
 
     public void InitializeGame(GameplayPhotonManager ph, GameManager gm, int ID)
@@ -75,7 +75,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         this.ID = ID;
         gameScene = true;
 
-        photonView.RPC(nameof(ColorForPlayer), RpcTarget.All, ID);
+        photonView.RPC(nameof(ColorForPlayer), RpcTarget.All);
     }
 
     // Update is called once per frame
@@ -237,7 +237,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     #region RPCMethods
     [PunRPC]
-    private void ColorForPlayer(int ID)
+    private void ColorForPlayer()
     {
         render.material = gm.PlayerMaterials[ID];
     }
