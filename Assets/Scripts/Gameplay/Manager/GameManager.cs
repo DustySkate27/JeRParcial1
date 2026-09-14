@@ -23,7 +23,6 @@ public class GameManager : MonoBehaviourPun, IPunObservable
     [SerializeField] private float matchDuration;
     public float currentTime;
     private bool matchStarted;
-    private bool matchFinished = false;
 
     [Header("Canvas")]
     [SerializeField] public GameObject switchingMasterCanvas;
