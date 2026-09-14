@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
     [SerializeField] private float matchDuration;
     public float currentTime;
     private bool matchStarted;
+    private bool matchFinished = false;
 
     [Header("Canvas")]
     [SerializeField] public GameObject switchingMasterCanvas;
@@ -181,6 +182,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         crownController.isCrownTaken = false;
         
         Vector3 position = new Vector3(winner.cameraWinTransform.position.x, winner.cameraWinTransform.position.y, mainCamera.transform.position.z);
+        winner.speed = 0;
         mainCamera.transform.position = position;
     }
 

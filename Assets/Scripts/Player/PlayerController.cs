@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [SerializeField] private LayerMask bulletDetectionLayer;
 
     [Header("Movement configuration")]
-    [SerializeField] private float speed;
+    [SerializeField] public float speed;
     [SerializeField] private float jumpForces;
     [SerializeField] private LayerMask floorLayer;
     [SerializeField] private Transform checkFloor;
