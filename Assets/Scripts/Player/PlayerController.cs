@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     public int points = 0;
     public int ID;
 
+    [Header("Powers")]
+    [SerializeField] private GameObject shieldPrefab;
     public bool haveShield = false;
     public bool haveSpeedBost = false;
     private float speedBostDuration;
@@ -290,6 +292,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private void ActiveShield()
     {
         haveShield = true;
+        shieldPrefab.SetActive(true);
         Debug.Log(this + "Have Shield" +  haveShield);
     }
 
@@ -297,6 +300,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private void DeactiveShield()
     {
         haveShield = false;
+        shieldPrefab.SetActive(false);
         Debug.Log(this + "Have Shield" + haveShield);
     }
 
