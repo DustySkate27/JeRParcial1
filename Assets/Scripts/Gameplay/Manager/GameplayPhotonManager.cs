@@ -27,7 +27,8 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                gm.SpawnPlayer(0);
+                int myID = GetPlayerID();
+                gm.SpawnPlayer(myID);
                 gm.StartMatch();
                 gm.currentTime = 0;
                 PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { { "matchStarted", true } });
