@@ -133,27 +133,30 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             jump = true;
         }
 
-        if (moveDirection > 0f && !isFacingRight)
+        if(moveDirection != 0f)
         {
-            playerModel.transform.rotation = Quaternion.Euler(0f, 0f, 0f); // mirando a la derecha
-            isFacingRight = true;
             if (haveSpeedBost)
+                ActivateSpeedPrefab(true);
+
+            if (moveDirection > 0f && !isFacingRight)
             {
-                speedPrefab.SetActive(true);
+                playerModel.transform.rotation = Quaternion.Euler(0f, 0f, 0f); // mirando a la derecha
+                isFacingRight = true;
+            }
+            else if (moveDirection < 0f && isFacingRight)
+            {
+                
+
+                playerModel.transform.rotation = Quaternion.Euler(0f, 180f, 0f); // mirando a la izquierda
+                isFacingRight = false;
             }
         }
-        else if (moveDirection < 0f && isFacingRight)
+        else
         {
-            playerModel.transform.rotation = Quaternion.Euler(0f, 180f, 0f); // mirando a la izquierda
-            isFacingRight = false;
-            speedPrefab.SetActive(true);
+            ActivateSpeedPrefab(false);
         }
-        else if(moveDirection == 0f)
-        {
-            speedPrefab.SetActive(false);
-        }
-
-            canJump = Physics.CheckSphere(checkFloor.position, checkFloorDistance, floorLayer);
+        
+        canJump = Physics.CheckSphere(checkFloor.position, checkFloorDistance, floorLayer);
     }
 
     private void FixedUpdate()
@@ -237,8 +240,12 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     public void AddSpeedBost(float speedDuration)
     {
-        speedBostDuration = speedDuration;
-        haveSpeedBost = true;
+        photonView.RPC(nameof(ActiveSpeed), RpcTarget.All, speedDuration);
+    }
+
+    public void ActivateSpeedPrefab(bool state)
+    {
+        photonView.RPC(nameof(SpeedPrefab), RpcTarget.All, state);
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -247,27 +254,13 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         {
             stream.SendNext(points);
             stream.SendNext(isFacingRight);
-            stream.SendNext(haveSpeedBost);
-            stream.SendNext(moveDirection);
         }
         else
         {
             points = (int)stream.ReceiveNext();
             pointsUI.text = points.ToString();
-
-            haveSpeedBost = (bool)stream.ReceiveNext();
-            moveDirection = (float)stream.ReceiveNext();
-
-            if (haveSpeedBost && moveDirection != 0f)
-            {
-                speedPrefab.SetActive(true);
-            }
-            else
-            {
-                speedPrefab.SetActive(false);
-            }
-
-                bool facingRight = (bool)stream.ReceiveNext();
+            
+            bool facingRight = (bool)stream.ReceiveNext();
             if (facingRight != isFacingRight)
             {
                 isFacingRight = facingRight;
@@ -326,6 +319,19 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         haveShield = false;
         shieldPrefab.SetActive(false);
         Debug.Log(this + "Have Shield" + haveShield);
+    }
+
+    [PunRPC]
+    private void ActiveSpeed(float speedDuration)
+    {
+        speedBostDuration = speedDuration;
+        haveSpeedBost = true;
+    }
+
+    [PunRPC]
+    private void SpeedPrefab(bool state)
+    {
+        speedPrefab.SetActive(state);
     }
 
     #endregion
