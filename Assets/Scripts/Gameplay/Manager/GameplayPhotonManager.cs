@@ -127,4 +127,11 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
     {
         base.OnPlayerEnteredRoom(newPlayer); 
     }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        base.OnDisconnected(cause);
+
+        SceneManager.LoadScene("MainMenuScene");
+    }
 }
