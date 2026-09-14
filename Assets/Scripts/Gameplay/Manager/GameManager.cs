@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviourPun
 
     [Header("Crown Related")]
     [SerializeField] private GameObject crownPrefab;
-    [SerializeField] private GameObject crownSpawners;
+    [SerializeField] private GameObject crownSpawner;
     public CrownController crownController;
 
     public Dictionary<int, PlayerController> playersInMatch = new Dictionary<int, PlayerController>();
@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviourPun
 
     public void StartMatch()
     {
-        var crown = phMan.ReturnSpawnedRoomObject(crownPrefab.name, crownSpawners.transform.position, Quaternion.identity);
+        var crown = phMan.ReturnSpawnedRoomObject(crownPrefab.name, crownSpawner.transform.position, Quaternion.identity);
         int crownViewID = crown.GetComponent<PhotonView>().ViewID;
 
         photonView.RPC(nameof(RegisterCrown), RpcTarget.All, crownViewID);
@@ -101,21 +101,24 @@ public class GameManager : MonoBehaviourPun
         int currentWinner = -1;
         int highestPoints = -1;
 
-        foreach (var players in playersInMatch)
+        foreach(var player in playersInMatch)
         {
-            if (players.Value.points > highestPoints)
+            player.Value.canMove = false;
+            player.Value.CallQuitCrown();
+
+            if (player.Value.points > highestPoints)
             {
-                highestPoints = players.Value.points;
-                currentWinner = players.Key;
+                highestPoints = player.Value.points;
+                currentWinner = player.Key;
             }
         }
 
         if (currentWinner == -1) return;
 
         PlayerController winner = playersInMatch[currentWinner];
-        winner.canMove = false;
+        winner.transform.position = crownSpawner.transform.position;
         crownController.isCrownTaken = false;
-
+        
         Vector3 position = new Vector3(winner.cameraWinTransform.position.x, winner.cameraWinTransform.position.y, mainCamera.transform.position.z);
         mainCamera.transform.position = position;
     }

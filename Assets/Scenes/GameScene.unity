@@ -759,7 +759,7 @@ MonoBehaviour:
   matchDuration: 30
   currentTime: 0
   crownPrefab: {fileID: 2929724351776186149, guid: ab8e9654373f5494189d348920916b20, type: 3}
-  crownSpawners: {fileID: 2038831133}
+  crownSpawner: {fileID: 0}
   crownController: {fileID: 0}
 --- !u!4 &623485505
 Transform:
@@ -2864,7 +2864,7 @@ Transform:
   m_GameObject: {fileID: 2038831133}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.53, y: 6.5, z: -5.642351}
+  m_LocalPosition: {x: 0.68, y: 8.57, z: -5.642351}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
