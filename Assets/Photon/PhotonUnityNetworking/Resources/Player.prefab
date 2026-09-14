@@ -127,7 +127,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -22.7}
+  m_AnchoredPosition: {x: 0.1, y: -22.54}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5759601461309376748
@@ -380,6 +380,7 @@ GameObject:
   - component: {fileID: 7167770399885079444}
   - component: {fileID: 545138511697808223}
   - component: {fileID: 4187142867723980565}
+  - component: {fileID: 2273328284869567887}
   m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
@@ -541,6 +542,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 6672148590311333724}
   - {fileID: 4187142867723980565}
+  - {fileID: 2273328284869567887}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -560,6 +562,22 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 0
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &2273328284869567887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9023047242468333407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PhotonUnityNetworking::Photon.Pun.PhotonTransformView
+  m_SynchronizePosition: 0
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
 --- !u!1001 &506200739782552723
 PrefabInstance:
   m_ObjectHideFlags: 0
