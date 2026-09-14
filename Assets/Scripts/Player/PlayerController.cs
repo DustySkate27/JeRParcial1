@@ -1,6 +1,7 @@
 using Photon.Pun;
 using Photon.Realtime;
 using System;
+using TMPro;
 using Unity.Multiplayer.PlayMode;
 using UnityEngine;
 using UnityEngine.Rendering.UI;
@@ -40,6 +41,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     [Header("Render")]
     [SerializeField] private Renderer render;
+    [SerializeField] private GameObject playerModel;
 
     [Header("Laser")]
     [SerializeField] private GameObject laser;
@@ -53,6 +55,9 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     [Header("Camera Winning Position")]
     [SerializeField] public Transform cameraWinTransform;
+
+    [Header("Canvas")]
+    [SerializeField] public TextMeshProUGUI pointsUI;
 
     public void InitializeWait(WaitingPhotonManager ph, WaitManager wm, int ID)
     {
@@ -125,12 +130,12 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
         if (moveDirection > 0f && !isFacingRight)
         {
-            transform.rotation = Quaternion.Euler(0f, 0f, 0f); // mirando a la derecha
+            playerModel.transform.rotation = Quaternion.Euler(0f, 0f, 0f); // mirando a la derecha
             isFacingRight = true;
         }
         else if (moveDirection < 0f && isFacingRight)
         {
-            transform.rotation = Quaternion.Euler(0f, 180f, 0f); // mirando a la izquierda
+            playerModel.transform.rotation = Quaternion.Euler(0f, 180f, 0f); // mirando a la izquierda
             isFacingRight = false;
         }
 
@@ -193,6 +198,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     {
         rtPoints += Time.deltaTime;
         points = Convert.ToInt32(rtPoints);
+        pointsUI.text = points.ToString();
     }
 
     public void CallAddCrown()
