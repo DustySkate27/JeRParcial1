@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
     [Header("Canvas")]
     [SerializeField] public GameObject switchingMasterCanvas;
+    [SerializeField] private TextMeshProUGUI winText;
 
     [Header("Crown Related")]
     [SerializeField] private GameObject crownPrefab;
@@ -160,7 +161,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         int currentWinner = -1;
         int highestPoints = -1;
 
-        foreach(var player in playersInMatch)
+        foreach (var player in playersInMatch)
         {
             player.Value.canMove = false;
             player.Value.CallQuitCrown();
@@ -177,10 +178,29 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         PlayerController winner = playersInMatch[currentWinner];
         winner.transform.position = crownSpawner.transform.position;
         crownController.isCrownTaken = false;
-        
+
         Vector3 position = new Vector3(winner.cameraWinTransform.position.x, winner.cameraWinTransform.position.y, mainCamera.transform.position.z);
         winner.speed = 0;
         mainCamera.transform.position = position;
+
+        string winnerColor = null;
+        switch (winner.ID)
+        {
+            case 0:
+                winnerColor = "blue";
+                break;
+            case 1:
+                winnerColor = "green";
+                break;
+            case 2:
+                winnerColor = "red";
+                break;
+            case 3:
+                winnerColor = "yellow";
+                break;
+        }
+
+        winText.text = $"Lil {winnerColor} bro wins";
     }
 
     [PunRPC]

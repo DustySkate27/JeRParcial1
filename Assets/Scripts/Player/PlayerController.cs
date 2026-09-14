@@ -91,7 +91,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     private void Start()
     {
-        photonView.RPC(nameof(ColorForPlayer), RpcTarget.All);
+        photonView.RPC(nameof(ColorForPlayer), RpcTarget.All, ID);
         pointsUI.text = points.ToString();
     }
 
