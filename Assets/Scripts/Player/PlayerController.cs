@@ -1,13 +1,7 @@
-using ExitGames.Client.Photon.StructWrapping;
 using Photon.Pun;
-using Photon.Realtime;
 using System;
 using System.Collections.Generic;
-using TMPro;
-using Unity.Multiplayer.PlayMode;
 using UnityEngine;
-using UnityEngine.Rendering.UI;
-using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviourPun, IPunObservable
 {
@@ -15,19 +9,11 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     private WaitingPhotonManager phWait;
     private GameManager gm;
     private WaitManager wm;
-    private bool gameScene = false;
+    private bool waitScene = false;
 
     private float rtPoints;
     public int points = 0;
     public int ID;
-
-    [Header("Powers")]
-    [SerializeField] private GameObject shieldPrefab;
-    [SerializeField] private GameObject speedPrefab;
-    public bool haveShield = false;
-    public bool haveSpeedBost = false;
-    private float speedBostDuration;
-    [SerializeField] private float speedMult = 2f;
 
     [SerializeField] private LayerMask bulletDetectionLayer;
 
@@ -38,8 +24,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [SerializeField] private Transform checkFloor;
     [SerializeField] private float checkFloorDistance;
     public bool canMove = true;
-    private float moveDirection;
-    private bool isFacingRight = true;
+    private float hMove;
+    private float vMove;
     private bool canJump = false;
     private bool jump = false;
     private Rigidbody rb;
@@ -55,15 +41,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [SerializeField] private float attackCD;
     private float counterCD;
 
-    [Header("Crown")]
-    public Transform crownPosition;
-    private bool haveCrown;
-
     [Header("Camera Winning Position")]
     [SerializeField] public Transform cameraWinTransform;
-
-    [Header("Canvas")]
-    [SerializeField] public TextMeshProUGUI pointsUI;
 
     public void InitializeWait(WaitingPhotonManager ph, WaitManager wm, int ID)
     {
@@ -74,7 +53,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         phWait = ph;
         this.wm = wm;
         this.ID = ID;
-        gameScene = false;
+        waitScene = true;
         photonView.RPC(nameof(ColorForPlayer), RpcTarget.All, ID);
     }
 
@@ -87,7 +66,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         phMan = ph;
         this.gm = gm;
         this.ID = ID;
-        gameScene = true;
+        waitScene = false;
         photonView.RPC(nameof(ColorForPlayer), RpcTarget.All, ID);
     }
 
@@ -95,7 +74,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     {
         if (!photonView.IsMine) return;
         
-        pointsUI.text = points.ToString();
     }
 
     // Update is called once per frame
@@ -105,27 +83,14 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
         if (!canMove) return;
 
-        if (haveSpeedBost)
-        {
-            speedBostDuration -= Time.deltaTime;
-
-            if (speedBostDuration < 0)
-            {
-                haveSpeedBost = false;
-            }
-        }
-
-        if(gameScene == false && Input.GetKeyDown(KeyCode.S))
+        if(waitScene == true && Input.GetKeyDown(KeyCode.F))
         {
             wm.TransitionIsReady();
         }
 
-        if (haveCrown)
-        {
-            AddPoint();
-        }
+        hMove = Input.GetAxisRaw("Horizontal");
+        vMove = Input.GetAxisRaw("Vertical");
 
-        moveDirection = Input.GetAxisRaw("Horizontal");
         counterCD += Time.deltaTime;
 
         if (Input.GetMouseButtonDown(0) && counterCD > attackCD)
@@ -133,32 +98,9 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             Attack();
         }
 
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             jump = true;
-        }
-
-        if(moveDirection != 0f)
-        {
-            if (haveSpeedBost)
-                ActivateSpeedPrefab(true);
-
-            if (moveDirection > 0f && !isFacingRight)
-            {
-                playerModel.transform.rotation = Quaternion.Euler(0f, 0f, 0f); // mirando a la derecha
-                isFacingRight = true;
-            }
-            else if (moveDirection < 0f && isFacingRight)
-            {
-                
-
-                playerModel.transform.rotation = Quaternion.Euler(0f, 180f, 0f); // mirando a la izquierda
-                isFacingRight = false;
-            }
-        }
-        else
-        {
-            ActivateSpeedPrefab(false);
         }
         
         canJump = Physics.CheckSphere(checkFloor.position, checkFloorDistance, floorLayer);
@@ -171,29 +113,26 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         if (rb == null) return;
 
         Move();
-        
+
         if (canJump && jump)
         {
             Jump();
         }
     }
 
+
     public void Move()
     {
-        Vector3 movement;
+        Vector3 moveDir = (transform.right * hMove + transform.forward * vMove);
 
-        if (haveSpeedBost)
-        {
-            movement = new Vector3(moveDirection, 0f, 0f) * speed * speedMult;
-        }
-        else
-        {
-            movement = new Vector3(moveDirection, 0f, 0f) * speed;
-        }
+        if (moveDir.sqrMagnitude > 1f)
+            moveDir.Normalize();
 
-        rb.linearVelocity = new Vector3(movement.x, rb.linearVelocity.y, rb.linearVelocity.z);
+        Vector3 velocity = moveDir * speed;
+        velocity.y = rb.linearVelocity.y;
+
+        rb.linearVelocity = velocity;
     }
-
     public void Jump()
     {
         rb.AddForce(Vector3.up * jumpForces, ForceMode.Impulse);
@@ -203,7 +142,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     public void Attack()
     {
         counterCD = 0;
-        if (gameScene)
+        if (!waitScene)
         {
             LaserMovement attack = phMan.ReturnSpawnedObject(laser.name, laserSpawn.transform.position, laserSpawn.transform.rotation).GetComponent<LaserMovement>();
             attack.owner = this;
@@ -220,64 +159,18 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     {
         rtPoints += Time.deltaTime;
         points = Convert.ToInt32(rtPoints);
-        pointsUI.text = points.ToString();
     }
 
-    public void CallAddCrown()
-    {
-        photonView.RPC(nameof(AddCrown), RpcTarget.All);
-    }
-
-    public void CallQuitCrown()
-    {
-        photonView.RPC(nameof(QuitCrown), RpcTarget.All);
-    }
-
-    public void AddShield()
-    {
-        photonView.RPC(nameof(ActiveShield), RpcTarget.All);
-    }
-
-    public void QuitShield()
-    {
-        photonView.RPC(nameof(DeactiveShield), RpcTarget.All);
-    }
-
-    public void AddSpeedBost(float speedDuration)
-    {
-        photonView.RPC(nameof(ActiveSpeed), RpcTarget.All, speedDuration);
-    }
-
-    public void ActivateSpeedPrefab(bool state)
-    {
-        photonView.RPC(nameof(SpeedPrefab), RpcTarget.All, state);
-    }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
             stream.SendNext(points);
-            stream.SendNext(isFacingRight);
         }
         else
         {
             points = (int)stream.ReceiveNext();
-            pointsUI.text = points.ToString();
-            
-            bool facingRight = (bool)stream.ReceiveNext();
-            if (facingRight != isFacingRight)
-            {
-                isFacingRight = facingRight;
-                if(isFacingRight)
-                {
-                    playerModel.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-                }
-                else
-                {
-                    playerModel.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
-                }
-            }
         }
     }
 
@@ -295,59 +188,11 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         playerMaterials[id].SetActive(true);
     }
 
-    [PunRPC]
-    private void AddCrown()
-    {
-        haveCrown = true;
-    }
-
-    [PunRPC]
-    private void QuitCrown()
-    {
-        haveCrown = false;
-    }
-
-    [PunRPC]
-    private void ActiveShield()
-    {
-        haveShield = true;
-        shieldPrefab.SetActive(true);
-        Debug.Log(this + "Have Shield" +  haveShield);
-    }
-
-    [PunRPC]
-    private void DeactiveShield()
-    {
-        haveShield = false;
-        shieldPrefab.SetActive(false);
-        Debug.Log(this + "Have Shield" + haveShield);
-    }
-
-    [PunRPC]
-    private void ActiveSpeed(float speedDuration)
-    {
-        speedBostDuration = speedDuration;
-        haveSpeedBost = true;
-    }
-
-    [PunRPC]
-    private void SpeedPrefab(bool state)
-    {
-        speedPrefab.SetActive(state);
-    }
-
     #endregion
 
     private void OnTriggerEnter(Collider other)
     {
-        if ((bulletDetectionLayer.value & (1 << other.gameObject.layer)) != 0)
-        {
-            if (haveShield)
-            {
-                Debug.Log("Shield quitado por" + other.name);
-                QuitShield();
-            }
-        }
+
     }
 
 

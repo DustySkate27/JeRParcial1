@@ -109,11 +109,6 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
                 PhotonNetwork.LoadLevel("WaitingScene");
             }
         }
-
-        if (gm.crownController == null)
-        {
-            gm.StartMatch();
-        }
     }
 
     public override void OnMasterClientSwitched(Player newMasterClient)

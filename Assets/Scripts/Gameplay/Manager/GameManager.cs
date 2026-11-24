@@ -29,7 +29,6 @@ public class GameManager : MonoBehaviourPun, IPunObservable
     [Header("Crown Related")]
     [SerializeField] private GameObject crownPrefab;
     [SerializeField] private GameObject crownSpawner;
-    public CrownController crownController;
 
     [Header("Powers")]
     [SerializeField] private GameObject speedPrefab;
@@ -71,10 +70,6 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
     public void StartMatch()
     {
-        var crown = phMan.ReturnSpawnedRoomObject(crownPrefab.name, crownSpawner.transform.position, Quaternion.identity);
-        int crownViewID = crown.GetComponent<PhotonView>().ViewID;
-
-        photonView.RPC(nameof(RegisterCrown), RpcTarget.All, crownViewID);
         matchStarted = true;
     }
 
@@ -131,15 +126,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
     #region RPCMethods
 
-    [PunRPC]
-    public void RegisterCrown(int viewID)
-    {
-        PhotonView pv = PhotonView.Find(viewID);
-        if (pv == null) return;
-
-        crownController = pv.GetComponent<CrownController>();
-    }
-
+    
     [PunRPC]
     public void RegisterPlayer(int ID, int viewID)
     {
@@ -164,7 +151,6 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         foreach (var player in playersInMatch)
         {
             player.Value.canMove = false;
-            player.Value.CallQuitCrown();
 
             if (player.Value.points > highestPoints)
             {
@@ -177,7 +163,6 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
         PlayerController winner = playersInMatch[currentWinner];
         winner.transform.position = crownSpawner.transform.position;
-        crownController.isCrownTaken = false;
 
         Vector3 position = new Vector3(winner.cameraWinTransform.position.x, winner.cameraWinTransform.position.y, mainCamera.transform.position.z);
         winner.speed = 0;
