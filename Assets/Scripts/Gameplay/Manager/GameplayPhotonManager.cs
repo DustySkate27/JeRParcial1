@@ -27,6 +27,8 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
         {
             if (PhotonNetwork.IsMasterClient)
             {
+                PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("modeToPlay", out object value);
+                gm.modeToPlay = (string)value;
                 gm.SpawnPlayer(GetPlayerID());
                 gm.StartMatch();
                 gm.currentTime = 0;

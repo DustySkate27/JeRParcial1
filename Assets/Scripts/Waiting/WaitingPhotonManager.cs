@@ -29,6 +29,15 @@ public class WaitingPhotonManager : MonoBehaviourPunCallbacks
             {
                 wm.SpawnPlayer(GetPlayerID());
                 PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { { "matchStarted", false } });
+                string modeToPlay = wm.RandomSelection();
+                if(modeToPlay != null)
+                {
+                    ModifyRoomMode(modeToPlay);
+                }
+                else
+                {
+                    wm.noMoreMinigames.SetActive(true);
+                }
             }
             else
             {
@@ -42,6 +51,11 @@ public class WaitingPhotonManager : MonoBehaviourPunCallbacks
         }
         wm.PlayerEnteredParty();
 
+    }
+
+    public void ModifyRoomMode(string mode)
+    {
+        PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { { "modeToPlay", mode } });
     }
 
     private int GetPlayerID()

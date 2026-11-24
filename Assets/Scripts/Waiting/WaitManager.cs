@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using Photon.Pun;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -7,10 +8,13 @@ using UnityEngine;
 public class WaitManager : MonoBehaviourPun
 {
     [SerializeField] private WaitingPhotonManager phWait;
+    //private List<string> modesToPlay = new List<string> { "targetLaserMode", "parkourMode", "dodgeballMode" };
+    List<string> modesToPlay = new List<string> { "parkourMode" };
 
     [Header("Master Texts")]
     [SerializeField] private GameObject waitText;
     [SerializeField] private GameObject readyText;
+    [SerializeField] public GameObject noMoreMinigames;
 
     [Header("Player Related")]
     [SerializeField] private GameObject playerPrefab;
@@ -32,6 +36,29 @@ public class WaitManager : MonoBehaviourPun
         {
             phWait.GameStartConfirmed();
         }
+    }
+
+    public string RandomSelection()
+    {
+        foreach(string s in modesToPlay) //Esta accion se repite siempre, porque limpia los modos ya jugados.
+        {
+            if(PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(s, out object value))
+            {
+                if ((bool)value)
+                {
+                    modesToPlay.Remove(s);
+                }
+            }
+        }
+        
+        if (modesToPlay.Count == 0)
+        {
+            return null;
+        }
+        
+        int index = Random.Range(0, modesToPlay.Count - 1);
+
+        return modesToPlay[index];
     }
 
     public void RoomReady()

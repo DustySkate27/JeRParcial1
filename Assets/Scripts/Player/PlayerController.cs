@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     public int ID;
 
     [SerializeField] private LayerMask bulletDetectionLayer;
+    [SerializeField] private LayerMask winZoneLayer;
 
     [Header("Movement configuration")]
     [SerializeField] public float speed;
@@ -188,11 +189,20 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         playerMaterials[id].SetActive(true);
     }
 
+    [PunRPC]
+    private void PlayerWinsParkour()
+    {
+        gm.parkourWinner = true;
+    }
+
     #endregion
 
     private void OnTriggerEnter(Collider other)
     {
-
+        if ((winZoneLayer.value & (1 << other.gameObject.layer)) != 0)
+        {
+            photonView.RPC(nameof(PlayerWinsParkour), RpcTarget.All, ID);
+        }
     }
 
 

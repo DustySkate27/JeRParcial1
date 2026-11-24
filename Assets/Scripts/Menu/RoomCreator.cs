@@ -18,14 +18,18 @@ public class RoomCreator : MonoBehaviourPun
     public void RoomCreation()
     {
         bool hasPassword = !string.IsNullOrEmpty(roomPassword.text);
-
+        string modeToPlay = "";
         Hashtable customProps = null;
 
         customProps = new Hashtable
         {
             { "isPrivate", hasPassword },
             { "password", roomPassword.text },
-            { "matchStarted", false }
+            { "matchStarted", false },
+            { "modeToPlay", modeToPlay },
+           // { "targetLaserMode", false },
+            { "parkourMode", false },
+            //{ "dodgeballMode", false }
         };
 
         RoomOptions options = new RoomOptions

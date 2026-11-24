@@ -309,6 +309,9 @@ MonoBehaviour:
   bulletDetectionLayer:
     serializedVersion: 2
     m_Bits: 512
+  winZoneLayer:
+    serializedVersion: 2
+    m_Bits: 256
   speed: 10
   jumpForces: 10
   floorLayer:

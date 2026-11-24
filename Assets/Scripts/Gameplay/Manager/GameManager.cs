@@ -8,43 +8,30 @@ using UnityEngine;
 public class GameManager : MonoBehaviourPun, IPunObservable
 {
     public GameplayPhotonManager phMan;
-
-    [Header("Camera Related")]
-    [SerializeField] private Camera mainCamera;
-    [SerializeField] private Transform orignalPosition;
+    public string modeToPlay;
 
     [Header("Player Related")]
     [SerializeField] private GameObject playerPrefab;
-    [SerializeField] private List<GameObject> playerSpawners;
+    [SerializeField] private List<GameObject> parkourModeSpawners;
+    [SerializeField] private List<GameObject> laserModeSpawners;
+    [SerializeField] private List<GameObject> dodgeballModeSpawners;
 
-    [Header("WinCondition")]
+    [Header("Target Lasers Mode")]
     [SerializeField] private float matchDuration;
     public float currentTime;
     private bool matchStarted;
 
+    [Header("Parkour")]
+    public bool parkourWinner = false;
+
+    [Header("Dodgeball")]
+
     [Header("Canvas")]
     [SerializeField] public GameObject switchingMasterCanvas;
-    [SerializeField] private TextMeshPro winText;
+    [SerializeField] private TextMeshProUGUI winText;
 
-    [Header("Crown Related")]
-    [SerializeField] private GameObject crownPrefab;
-    [SerializeField] private GameObject crownSpawner;
-
-    [Header("Powers")]
-    [SerializeField] private GameObject speedPrefab;
-    [SerializeField] private GameObject shieldPrefab;
-    [SerializeField] private GameObject shieldSpawner;
-    [SerializeField] private GameObject speedSpawner;
-    private float spawnCooldown = 15f;
-    private float timeToSpawnPowers = 0;
 
     public Dictionary<int, PlayerController> playersInMatch = new Dictionary<int, PlayerController>();
-
-    private void Start()
-    {
-        SpawnPowers();
-        timeToSpawnPowers = 0;
-    }
 
     private void Update()
     {
@@ -52,18 +39,21 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
         if (matchStarted)
         {
-            currentTime += Time.deltaTime;
-            EndCondition();
-        }
+            switch (modeToPlay)
+            {
+                case "TargetLasers":
+                    EndConditionTargetLasers();
+                    break;
 
-        if(timeToSpawnPowers < spawnCooldown)
-        {
-            timeToSpawnPowers += Time.deltaTime;
-        }
-        else
-        {
-            SpawnPowers();
-            timeToSpawnPowers = 0;
+                case "Parkour":
+                    if(parkourWinner)
+                    EndConditionParkour();
+                    break;
+
+                case "Dodgeball":
+                    EndConditionDodgeball();
+                    break;
+            }
         }
 
     }
@@ -85,21 +75,51 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         switchingMasterCanvas.SetActive(false);
     }
 
-    private void SpawnPowers()
-    {
-        phMan.ReturnSpawnedRoomObject(speedPrefab.name, speedSpawner.transform.position, Quaternion.identity);
-        phMan.ReturnSpawnedRoomObject(shieldPrefab.name, shieldSpawner.transform.position, Quaternion.identity);
-    }
 
     public void SpawnPlayer(int ID)
     {
-        GameObject currentPlayer = phMan.ReturnSpawnedObject(playerPrefab.name, playerSpawners[ID].transform.position, Quaternion.identity);
+        switch (modeToPlay)
+        {
+            case "TargetLasers":
+                PlayerSpawnMethod(ID, laserModeSpawners);
+                break;
+
+            case "Parkour":
+                PlayerSpawnMethod(ID, parkourModeSpawners);
+                break;
+
+            case "Dodgeball":
+                PlayerSpawnMethod(ID, dodgeballModeSpawners);
+                break;
+        }
+    }
+
+    public void PlayerSpawnMethod(int ID, List<GameObject> spawns)
+    {
+        GameObject currentPlayer = phMan.ReturnSpawnedObject(playerPrefab.name, spawns[ID].transform.position, Quaternion.identity);
         PlayerController player = currentPlayer.GetComponent<PlayerController>();
         player.InitializeGame(phMan, this, ID);
         photonView.RPC(nameof(RegisterPlayer), RpcTarget.All, ID, player.photonView.ViewID);
     }
 
-    public void EndCondition()
+
+
+    public void EndConditionTargetLasers()
+    {
+        if (currentTime >= matchDuration)
+        {
+            photonView.RPC(nameof(EndGame), RpcTarget.All);
+            StartCoroutine(ReturningToWaitingScene());
+        }
+    }
+
+    public void EndConditionParkour()
+    {
+        photonView.RPC(nameof(EndGame), RpcTarget.All);
+        StartCoroutine(ReturningToWaitingScene());
+    }
+
+    public void EndConditionDodgeball()
     {
         if (currentTime >= matchDuration)
         {
@@ -114,13 +134,11 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         {
             stream.SendNext(currentTime);
             stream.SendNext(matchStarted);
-            stream.SendNext(timeToSpawnPowers);
         }
         else
         {
             currentTime = (float)stream.ReceiveNext();
             matchStarted = (bool)stream.ReceiveNext();
-            timeToSpawnPowers = (float)stream.ReceiveNext();
         }
     }
 
@@ -162,11 +180,8 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         if (currentWinner == -1) return;
 
         PlayerController winner = playersInMatch[currentWinner];
-        winner.transform.position = crownSpawner.transform.position;
 
-        Vector3 position = new Vector3(winner.cameraWinTransform.position.x, winner.cameraWinTransform.position.y, mainCamera.transform.position.z);
         winner.speed = 0;
-        mainCamera.transform.position = position;
 
         winText.text = "Lil bro wins";
     }
