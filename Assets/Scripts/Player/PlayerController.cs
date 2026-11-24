@@ -54,7 +54,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         this.wm = wm;
         this.ID = ID;
         waitScene = true;
-        photonView.RPC(nameof(ColorForPlayer), RpcTarget.All, ID);
+        photonView.RPC(nameof(ColorForPlayer), RpcTarget.AllBuffered, ID);
     }
 
     public void InitializeGame(GameplayPhotonManager ph, GameManager gm, int ID)
@@ -67,7 +67,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         this.gm = gm;
         this.ID = ID;
         waitScene = false;
-        photonView.RPC(nameof(ColorForPlayer), RpcTarget.All, ID);
+        photonView.RPC(nameof(ColorForPlayer), RpcTarget.AllBuffered, ID);
     }
 
     private void Start()
