@@ -56,6 +56,8 @@ public class WaitingPhotonManager : MonoBehaviourPunCallbacks
     public void ModifyRoomMode(string mode)
     {
         PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable { { "modeToPlay", mode } });
+        PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("modeToPlay", out object value);
+        Debug.Log((string)value);
     }
 
     private int GetPlayerID()

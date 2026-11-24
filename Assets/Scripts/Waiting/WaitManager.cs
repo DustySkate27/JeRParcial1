@@ -56,8 +56,9 @@ public class WaitManager : MonoBehaviourPun
             return null;
         }
         
-        int index = Random.Range(0, modesToPlay.Count - 1);
+        int index = Random.Range(0, modesToPlay.Count);
 
+        Debug.Log(modesToPlay[index]);
         return modesToPlay[index];
     }
 

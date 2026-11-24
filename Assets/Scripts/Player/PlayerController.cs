@@ -42,9 +42,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [SerializeField] private float attackCD;
     private float counterCD;
 
-    [Header("Camera Winning Position")]
-    [SerializeField] public Transform cameraWinTransform;
-
     public void InitializeWait(WaitingPhotonManager ph, WaitManager wm, int ID)
     {
         if (!photonView.IsMine) return;

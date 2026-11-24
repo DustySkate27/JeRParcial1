@@ -78,6 +78,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
     public void SpawnPlayer(int ID)
     {
+        Debug.Log(modeToPlay);
         switch (modeToPlay)
         {
             case "TargetLasers":
