@@ -205,7 +205,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     {
         if ((winZoneLayer.value & (1 << other.gameObject.layer)) != 0)
         {
-            photonView.RPC(nameof(PlayerWinsParkour), RpcTarget.All, ID);
+            photonView.RPC(nameof(PlayerWinsParkour), RpcTarget.All);
         }
 
         if ((bulletDetectionLayer.value & (1 << other.gameObject.layer)) != 0)
