@@ -27,7 +27,7 @@ public class RoomCreator : MonoBehaviourPun
             { "password", roomPassword.text },
             { "matchStarted", false },
             { "modeToPlay", modeToPlay },
-            { "targetLaserMode", true },
+            { "targetLaserMode", false },
             { "parkourMode", false },
             { "dodgeballMode", true }
         };
