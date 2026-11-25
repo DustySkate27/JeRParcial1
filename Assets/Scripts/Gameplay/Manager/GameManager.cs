@@ -41,16 +41,16 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         {
             switch (modeToPlay)
             {
-                case "TargetLasers":
+                case "targetLaserMode":
                     EndConditionTargetLasers();
                     break;
 
-                case "Parkour":
+                case "parkourMode":
                     if(parkourWinner)
                     EndConditionParkour();
                     break;
 
-                case "Dodgeball":
+                case "dodgeballMode":
                     EndConditionDodgeball();
                     break;
             }
@@ -78,18 +78,17 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
     public void SpawnPlayer(int ID)
     {
-        Debug.Log(modeToPlay);
         switch (modeToPlay)
         {
-            case "TargetLasers":
+            case "targetLaserMode":
                 PlayerSpawnMethod(ID, laserModeSpawners);
                 break;
 
-            case "Parkour":
+            case "parkourMode":
                 PlayerSpawnMethod(ID, parkourModeSpawners);
                 break;
 
-            case "Dodgeball":
+            case "dodgeballMode":
                 PlayerSpawnMethod(ID, dodgeballModeSpawners);
                 break;
         }

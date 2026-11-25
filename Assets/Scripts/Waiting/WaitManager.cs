@@ -8,8 +8,8 @@ using UnityEngine;
 public class WaitManager : MonoBehaviourPun
 {
     [SerializeField] private WaitingPhotonManager phWait;
-    //private List<string> modesToPlay = new List<string> { "targetLaserMode", "parkourMode", "dodgeballMode" };
-    List<string> modesToPlay = new List<string> { "parkourMode" };
+    private List<string> modesToPlay = new List<string>(); 
+    private List<string> possibleModes = new List<string> { "targetLaserMode", "parkourMode", "dodgeballMode" };
 
     [Header("Master Texts")]
     [SerializeField] private GameObject waitText;
@@ -40,13 +40,13 @@ public class WaitManager : MonoBehaviourPun
 
     public string RandomSelection()
     {
-        foreach(string s in modesToPlay) //Esta accion se repite siempre, porque limpia los modos ya jugados.
+        foreach(string s in possibleModes) //Esta accion se repite siempre, porque limpia los modos ya jugados.
         {
             if(PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue(s, out object value))
             {
-                if ((bool)value)
+                if (!(bool)value)
                 {
-                    modesToPlay.Remove(s);
+                    modesToPlay.Add(s);
                 }
             }
         }
