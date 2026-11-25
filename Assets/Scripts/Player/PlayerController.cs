@@ -203,6 +203,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     private void OnTriggerEnter(Collider other)
     {
+        if (!photonView.IsMine) return;
+
         if ((winZoneLayer.value & (1 << other.gameObject.layer)) != 0)
         {
             photonView.RPC(nameof(PlayerWinsParkour), RpcTarget.All);
