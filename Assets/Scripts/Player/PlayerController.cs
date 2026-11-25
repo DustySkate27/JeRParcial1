@@ -91,7 +91,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
         counterCD += Time.deltaTime;
 
-        if (Input.GetMouseButtonDown(0) && counterCD > attackCD)
+        if (Input.GetMouseButtonDown(0) && counterCD > attackCD && gm.modeToPlay == "targetLaserMode")
         {
             Attack();
         }
@@ -192,6 +192,13 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         gm.parkourWinner = true;
     }
 
+    [PunRPC]
+    private void PlayerDeath(int id)
+    {
+        if (!photonView.IsMine) return;
+        Destroy(gameObject);
+        gm.SpawnPlayer(id);
+    }
     #endregion
 
     private void OnTriggerEnter(Collider other)
@@ -199,6 +206,11 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         if ((winZoneLayer.value & (1 << other.gameObject.layer)) != 0)
         {
             photonView.RPC(nameof(PlayerWinsParkour), RpcTarget.All, ID);
+        }
+
+        if ((bulletDetectionLayer.value & (1 << other.gameObject.layer)) != 0)
+        {
+            photonView.RPC(nameof(PlayerDeath), RpcTarget.All, ID);
         }
     }
 

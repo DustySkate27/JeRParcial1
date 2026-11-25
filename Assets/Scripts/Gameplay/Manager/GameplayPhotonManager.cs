@@ -11,7 +11,6 @@ using Unity.VisualScripting;
 public class GameplayPhotonManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] private GameManager gm;
-    private string mode;
     public int PlayerCount => AmountOfPlayers();
 
     private void Start()
@@ -30,8 +29,7 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
             if (PhotonNetwork.IsMasterClient)
             {
                 PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("modeToPlay", out object value);
-                mode = (string)value;
-                gm.modeToPlay = mode;
+                gm.modeToPlay = (string)value;
                 gm.SpawnPlayer(GetPlayerID());
                 gm.StartMatch();
                 gm.currentTime = 0;
@@ -39,7 +37,8 @@ public class GameplayPhotonManager : MonoBehaviourPunCallbacks
             }
             else
             {
-                gm.modeToPlay = mode;
+                PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("modeToPlay", out object value);
+                gm.modeToPlay = (string)value;
                 gm.SpawnPlayer(GetPlayerID());
             }
         }
