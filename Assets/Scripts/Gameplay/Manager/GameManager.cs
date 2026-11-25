@@ -143,6 +143,12 @@ public class GameManager : MonoBehaviourPun, IPunObservable
     #region RPCMethods
 
     [PunRPC]
+    public void PlayerWinsParkour()
+    {
+        parkourWinner = true;
+    }
+
+    [PunRPC]
     public void RegisterPlayer(int ID, int viewID)
     {
         PhotonView pv = PhotonView.Find(viewID);

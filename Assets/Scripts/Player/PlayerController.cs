@@ -118,7 +118,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
     }
 
-
     public void Move()
     {
         Vector3 moveDir = (transform.right * hMove + transform.forward * vMove);
@@ -187,12 +186,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     }
 
     [PunRPC]
-    private void PlayerWinsParkour()
-    {
-        gm.parkourWinner = true;
-    }
-
-    [PunRPC]
     private void PlayerDeath(int id)
     {
         if (!photonView.IsMine) return;
@@ -207,7 +200,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
         if ((winZoneLayer.value & (1 << other.gameObject.layer)) != 0)
         {
-            photonView.RPC(nameof(PlayerWinsParkour), RpcTarget.All);
+            gm.photonView.RPC(nameof(gm.PlayerWinsParkour), RpcTarget.All);
         }
 
         if ((deathZoneLayer.value & (1 << other.gameObject.layer)) != 0)
