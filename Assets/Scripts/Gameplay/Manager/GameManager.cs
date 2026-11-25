@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
                     break;
 
                 case "parkourMode":
-                    if(parkourWinner)
+                    if (!parkourWinner) return;
                     EndConditionParkour();
                     break;
 

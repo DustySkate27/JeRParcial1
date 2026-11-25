@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     public int points = 0;
     public int ID;
 
-    [SerializeField] private LayerMask bulletDetectionLayer;
+    [SerializeField] private LayerMask deathZoneLayer;
     [SerializeField] private LayerMask winZoneLayer;
 
     [Header("Movement configuration")]
@@ -208,7 +208,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             photonView.RPC(nameof(PlayerWinsParkour), RpcTarget.All);
         }
 
-        if ((bulletDetectionLayer.value & (1 << other.gameObject.layer)) != 0)
+        if ((deathZoneLayer.value & (1 << other.gameObject.layer)) != 0)
         {
             photonView.RPC(nameof(PlayerDeath), RpcTarget.All, ID);
         }
