@@ -104,6 +104,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
     public void EndConditionTargetLasers()
     {
+        currentTime += Time.deltaTime;
         if (currentTime >= matchDuration)
         {
             photonView.RPC(nameof(EndGame), RpcTarget.All);
