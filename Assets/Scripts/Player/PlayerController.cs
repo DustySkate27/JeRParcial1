@@ -40,6 +40,10 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [SerializeField] private GameObject laser;
     [SerializeField] private GameObject laserSpawn;
     [SerializeField] private float attackCD;
+    [Header("Animations")]
+    [SerializeField] private Animator[] playerAnimators;
+
+    private Animator activeAnimator;
     private float counterCD;
 
     public void InitializeWait(WaitingPhotonManager ph, WaitManager wm, int ID)
@@ -149,7 +153,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             LaserMovement attack = phWait.ReturnSpawnedObject(laser.name, laserSpawn.transform.position, laserSpawn.transform.rotation).GetComponent<LaserMovement>();
             attack.owner = this;
         }
-        
+        photonView.RPC(nameof(PlayAttackAnimation), RpcTarget.All);
     }
 
     private void AddPoint()
@@ -182,7 +186,12 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [PunRPC]
     private void ColorForPlayer(int id)
     {
-        playerMaterials[id].SetActive(true);
+        for (int i = 0; i < playerMaterials.Count; i++)
+        {
+            playerMaterials[i].SetActive(i == id);
+        }
+
+        activeAnimator = playerAnimators[id];
     }
 
     [PunRPC]
@@ -192,6 +201,14 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         Destroy(gameObject);
         gm.SpawnPlayer(id);
     }
+    [PunRPC]
+    private void PlayAttackAnimation()
+    {
+        if (activeAnimator == null) return;
+
+        activeAnimator.SetTrigger("Attack");
+    }
+
     #endregion
 
     private void OnTriggerEnter(Collider other)
