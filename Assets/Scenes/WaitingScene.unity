@@ -1550,7 +1550,11 @@ MonoBehaviour:
   waitText: {fileID: 869372739}
   readyText: {fileID: 1185543300}
   noMoreMinigames: {fileID: 1902851195}
-  playerPrefab: {fileID: 9023047242468333407, guid: d69c8eb269a562f42ab850cf996ebeee, type: 3}
+  playerPrefabs:
+  - {fileID: 9023047242468333407, guid: d69c8eb269a562f42ab850cf996ebeee, type: 3}
+  - {fileID: 7021609782266911447, guid: b17e367ee01125d4895f464569520575, type: 3}
+  - {fileID: 3640403116038480981, guid: be27594b412484d48b993f9bc3200d71, type: 3}
+  - {fileID: 7661024078683058523, guid: 270c432a7cd21aa499f5d17557269fef, type: 3}
   playerSpawners:
   - {fileID: 1314107660}
   - {fileID: 1940575062}

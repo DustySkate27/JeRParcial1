@@ -34,12 +34,12 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [Header("Render")]
     [SerializeField] private Renderer render;
     [SerializeField] private GameObject playerModel;
-    [SerializeField] private List<GameObject> playerMaterials;
 
     [Header("Laser")]
     [SerializeField] private GameObject laser;
     [SerializeField] private GameObject laserSpawn;
     [SerializeField] private float attackCD;
+
     [Header("Animations")]
     [SerializeField] private Animator[] playerAnimators;
 
@@ -56,7 +56,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         this.wm = wm;
         this.ID = ID;
         waitScene = true;
-        photonView.RPC(nameof(ColorForPlayer), RpcTarget.AllBuffered, ID);
     }
 
     public void InitializeGame(GameplayPhotonManager ph, GameManager gm, int ID)
@@ -69,7 +68,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         this.gm = gm;
         this.ID = ID;
         waitScene = false;
-        photonView.RPC(nameof(ColorForPlayer), RpcTarget.AllBuffered, ID);
     }
 
     private void Start()
@@ -183,16 +181,6 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     }
 
     #region RPCMethods
-    [PunRPC]
-    private void ColorForPlayer(int id)
-    {
-        for (int i = 0; i < playerMaterials.Count; i++)
-        {
-            playerMaterials[i].SetActive(i == id);
-        }
-
-        activeAnimator = playerAnimators[id];
-    }
 
     [PunRPC]
     private void PlayerDeath(int id)
@@ -201,6 +189,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         Destroy(gameObject);
         gm.SpawnPlayer(id);
     }
+
     [PunRPC]
     private void PlayAttackAnimation()
     {

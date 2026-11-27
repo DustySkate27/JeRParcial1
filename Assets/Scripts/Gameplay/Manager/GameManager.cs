@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
     public string modeToPlay;
 
     [Header("Player Related")]
-    [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private List<GameObject> playerPrefabs;
     [SerializeField] private List<GameObject> parkourModeSpawners;
     [SerializeField] private List<GameObject> laserModeSpawners;
     [SerializeField] private List<GameObject> dodgeballModeSpawners;
@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
     public void PlayerSpawnMethod(int ID, List<GameObject> spawns)
     {
-        GameObject currentPlayer = phMan.ReturnSpawnedObject(playerPrefab.name, spawns[ID].transform.position, Quaternion.identity);
+        GameObject currentPlayer = phMan.ReturnSpawnedObject(playerPrefabs[ID].name, spawns[ID].transform.position, Quaternion.identity);
         PlayerController player = currentPlayer.GetComponent<PlayerController>();
         player.InitializeGame(phMan, this, ID);
         photonView.RPC(nameof(RegisterPlayer), RpcTarget.All, ID, player.photonView.ViewID);

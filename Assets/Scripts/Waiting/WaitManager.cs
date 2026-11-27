@@ -17,14 +17,14 @@ public class WaitManager : MonoBehaviourPun
     [SerializeField] public GameObject noMoreMinigames;
 
     [Header("Player Related")]
-    [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private List<GameObject> playerPrefabs;
     [SerializeField] private List<GameObject> playerSpawners;
 
     public bool transitionReady = false;
 
     public PlayerController SpawnPlayer(int ID)
     {
-        GameObject currentPlayer = phWait.ReturnSpawnedObject(playerPrefab.name, playerSpawners[ID].transform.position, Quaternion.identity);
+        GameObject currentPlayer = phWait.ReturnSpawnedObject(playerPrefabs[ID].name, playerSpawners[ID].transform.position, Quaternion.identity);
         PlayerController player = currentPlayer.GetComponent<PlayerController>();
         player.InitializeWait(phWait, this, ID);
         return player;
