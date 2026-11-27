@@ -1,9 +1,10 @@
 using Photon.Pun;
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviourPun, IPunObservable
+public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable
 {
     private GameplayPhotonManager phMan;
     private WaitingPhotonManager phWait;
@@ -34,6 +35,12 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
     [Header("Render")]
     [SerializeField] private Renderer render;
     [SerializeField] private GameObject playerModel;
+    private float networkYaw; // Rotación Y del modelo recibida por red (jugadores remotos)
+    private const float remoteRotationSpeed = 720f; // grados/seg, solo para suavizar a los remotos
+
+    [Header("Username")]
+    [SerializeField] private TextMeshProUGUI userText;
+    private Camera cam;
 
     [Header("Laser")]
     [SerializeField] private GameObject laser;
@@ -72,8 +79,15 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
     private void Start()
     {
+        cam = Camera.main;
+
+        if (playerModel != null)
+            networkYaw = playerModel.transform.eulerAngles.y;
+
+        // Se ejecuta para TODOS los jugadores (antes del return de IsMine)
+        UpdateUserName();
+
         if (!photonView.IsMine) return;
-        
     }
 
     // Update is called once per frame
@@ -83,7 +97,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
         if (!canMove) return;
 
-        if(waitScene == true && Input.GetKeyDown(KeyCode.F))
+        if (waitScene == true && Input.GetKeyDown(KeyCode.F))
         {
             wm.TransitionIsReady();
         }
@@ -102,7 +116,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         {
             jump = true;
         }
-        
+
         canJump = Physics.CheckSphere(checkFloor.position, checkFloorDistance, floorLayer);
     }
 
@@ -120,9 +134,87 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         }
     }
 
+    private void LateUpdate()
+    {
+        if (cam == null) cam = Camera.main;
+
+        // Rotación del modelo
+        if (playerModel != null)
+        {
+            if (photonView.IsMine)
+            {
+                RotateModelToCamera();
+            }
+            else
+            {
+                ApplyRemoteRotation();
+            }
+        }
+
+        // El nombre siempre mira a la cámara
+        if (userText != null && cam != null)
+        {
+            userText.transform.rotation = cam.transform.rotation;
+        }
+    }
+
+    #region Rotation
+
+    // Jugador local: el modelo mira al mismo lado que la cámara, al instante (solo eje Y)
+    private void RotateModelToCamera()
+    {
+        if (cam == null) return;
+
+        playerModel.transform.rotation = Quaternion.Euler(0f, cam.transform.eulerAngles.y, 0f);
+    }
+
+    // Jugadores remotos: suavizan la rotación recibida por red
+    private void ApplyRemoteRotation()
+    {
+        Quaternion target = Quaternion.Euler(0f, networkYaw, 0f);
+        playerModel.transform.rotation = Quaternion.RotateTowards(
+            playerModel.transform.rotation, target, remoteRotationSpeed * Time.deltaTime);
+    }
+
+    #endregion
+
+    #region Username
+
+    private void UpdateUserName()
+    {
+        if (userText == null || photonView.Owner == null) return;
+
+        userText.text = photonView.Owner.NickName;
+    }
+
+    // Se llama cuando cambian las propiedades de un jugador (incluido el NickName)
+    public override void OnPlayerPropertiesUpdate(Photon.Realtime.Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
+    {
+        if (targetPlayer == photonView.Owner)
+        {
+            UpdateUserName();
+        }
+    }
+
+    #endregion
+
     public void Move()
     {
-        Vector3 moveDir = (transform.right * hMove + transform.forward * vMove);
+        // Como el objeto raíz ya no rota, el movimiento se calcula con la dirección de la cámara
+        Vector3 forward = transform.forward;
+        Vector3 right = transform.right;
+
+        if (cam != null)
+        {
+            forward = cam.transform.forward;
+            right = cam.transform.right;
+            forward.y = 0f;
+            right.y = 0f;
+            forward.Normalize();
+            right.Normalize();
+        }
+
+        Vector3 moveDir = (right * hMove + forward * vMove);
 
         if (moveDir.sqrMagnitude > 1f)
             moveDir.Normalize();
@@ -132,6 +224,7 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
         rb.linearVelocity = velocity;
     }
+
     public void Jump()
     {
         rb.AddForce(Vector3.up * jumpForces, ForceMode.Impulse);
@@ -160,16 +253,17 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
         points = Convert.ToInt32(rtPoints);
     }
 
-
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
         {
             stream.SendNext(points);
+            stream.SendNext(playerModel != null ? playerModel.transform.eulerAngles.y : 0f);
         }
         else
         {
             points = (int)stream.ReceiveNext();
+            networkYaw = (float)stream.ReceiveNext();
         }
     }
 
@@ -206,6 +300,8 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
 
         if ((winZoneLayer.value & (1 << other.gameObject.layer)) != 0)
         {
+            // Solo el cliente del ganador suma la victoria en su JSON
+            PlayerDataManager.Instance.AddWin(MiniGame.Parkour);
             gm.photonView.RPC(nameof(gm.PlayerWinsParkour), RpcTarget.All);
         }
 
@@ -214,6 +310,4 @@ public class PlayerController : MonoBehaviourPun, IPunObservable
             photonView.RPC(nameof(PlayerDeath), RpcTarget.All, ID);
         }
     }
-
-
 }
