@@ -300,9 +300,7 @@ public class PlayerController : MonoBehaviourPunCallbacks, IPunObservable
 
         if ((winZoneLayer.value & (1 << other.gameObject.layer)) != 0)
         {
-            // Solo el cliente del ganador suma la victoria en su JSON
-            PlayerDataManager.Instance.AddWin(MiniGame.Parkour);
-            gm.photonView.RPC(nameof(gm.PlayerWinsParkour), RpcTarget.All);
+            gm.photonView.RPC(nameof(gm.PlayerWinsParkour), RpcTarget.All, ID);
         }
 
         if ((deathZoneLayer.value & (1 << other.gameObject.layer)) != 0)

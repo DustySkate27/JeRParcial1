@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviourPun, IPunObservable
 
     [Header("Parkour")]
     public bool parkourWinner = false;
+    public int parkourWinnerID = -1;
 
     [Header("Dodgeball")]
 
@@ -140,12 +141,26 @@ public class GameManager : MonoBehaviourPun, IPunObservable
         }
     }
 
+    // Devuelve el minijuego actual según el modo de la sala
+    private MiniGame GetCurrentMiniGame()
+    {
+        switch (modeToPlay)
+        {
+            case "parkourMode": return MiniGame.Parkour;
+            case "targetLaserMode": return MiniGame.Laser;
+            default: return MiniGame.Minigame3; // dodgeballMode
+        }
+    }
+
     #region RPCMethods
 
     [PunRPC]
-    public void PlayerWinsParkour()
+    public void PlayerWinsParkour(int winnerID)
     {
+        if (parkourWinner) return; // solo cuenta el primero en llegar
+
         parkourWinner = true;
+        parkourWinnerID = winnerID;
     }
 
     [PunRPC]
@@ -180,13 +195,24 @@ public class GameManager : MonoBehaviourPun, IPunObservable
             }
         }
 
+        if (modeToPlay == "parkourMode")
+        {
+            currentWinner = parkourWinnerID;
+        }
+
         if (currentWinner == -1) return;
+        if (!playersInMatch.ContainsKey(currentWinner)) return;
 
         PlayerController winner = playersInMatch[currentWinner];
 
         winner.speed = 0;
 
-        winText.text = "Lil bro wins";
+        if (winner.photonView.IsMine)
+        {
+            PlayerDataManager.Instance.AddWin(GetCurrentMiniGame());
+        }
+
+        winText.text = winner.photonView.Owner.NickName + " wins";
     }
 
     [PunRPC]
